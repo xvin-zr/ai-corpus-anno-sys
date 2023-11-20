@@ -48,5 +48,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error(error);
+    return NextResponse.json({ error: "服务器错误" }, { status: 500 });
   }
 }
