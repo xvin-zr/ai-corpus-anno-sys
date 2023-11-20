@@ -1,9 +1,10 @@
 import Link from "next/link";
 import NavLinks from "./nav-links";
-import { User } from "react-feather";
+import { PenTool, User } from "react-feather";
 import { LogOut } from "react-feather";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+
 
 export default async function SideNav() {
   const session = await getServerSession(authOptions);
@@ -13,8 +14,8 @@ export default async function SideNav() {
         className="mb-6 flex h-5 items-center justify-start rounded-md bg-blue-bupt dark:bg-success-dark p-4 md:h-16"
         href="/"
       >
-        <div className="flex items-center justify-center w-32 text-zinc-50 text-xl font-semibold tracking-wider md:w-40">
-          语料标注
+        <div className="flex gap-1 items-center justify-center w-32 text-zinc-50 text-xl font-semibold tracking-wider md:w-40">
+          语料标注 <PenTool />
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
