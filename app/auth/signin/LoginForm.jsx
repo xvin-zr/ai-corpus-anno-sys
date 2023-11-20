@@ -14,13 +14,13 @@ function LoginForm() {
               邮箱地址
             </Form.Label>
             <Form.Message
-              className="text-zinc-950 ml-auto"
+              className="text-warning ml-auto"
               match={"valueMissing"}
             >
-              输入你的邮箱
+              请输入邮箱
             </Form.Message>
             <Form.Message
-              className="text-zinc-950 ml-auto"
+              className="text-warning ml-auto"
               match="typeMismatch"
             >
               输入正确的邮箱

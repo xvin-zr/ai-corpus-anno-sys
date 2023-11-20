@@ -56,14 +56,9 @@ const config: Config = {
       },
       zinc: colors.zinc,
       sky: colors.sky,
-      black: colors.black
+      black: colors.black,
     },
     extend: {
-      // backgroundImage: {
-      //   "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-      //   "gradient-conic":
-      //     "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      // },
       fontFamily: {
         sans: ["var(--font-inter)", "var(--font-noto-sans-sc)"],
       },
