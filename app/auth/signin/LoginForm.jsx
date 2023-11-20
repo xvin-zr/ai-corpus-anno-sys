@@ -58,7 +58,7 @@ function LoginForm() {
             <input
               type="email"
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-zinc-100 h-10 rounded-md text-lg border-none ring-1 ring-inset ring-zinc-300 px-3 focus:ring-1 focus:ring-inset focus:ring-blue-bupt shadow placeholder:text-zinc-400"
+              className="bg-zinc-100 dark:bg-zinc-900 h-10 rounded-md text-lg border-none ring-1 ring-inset ring-zinc-300 px-3 focus:ring-1 focus:ring-inset focus:ring-blue-bupt shadow placeholder:text-zinc-400"
               placeholder="bupt@example.com"
               required
             />
@@ -74,7 +74,7 @@ function LoginForm() {
             <input
               type="password"
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-zinc-100 h-10 rounded-md text-xl border-none ring-1 ring-inset ring-zinc-300 px-2 focus:ring-1 focus:ring-inset focus:ring-blue-bupt shadow"
+              className="bg-zinc-100 dark:bg-zinc-900 h-10 rounded-md text-xl border-none ring-1 ring-inset ring-zinc-300 px-2 focus:ring-1 focus:ring-inset focus:ring-blue-bupt shadow"
               required
             />
           </Form.Control>
