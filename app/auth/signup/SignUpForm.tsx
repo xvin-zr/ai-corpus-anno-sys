@@ -121,7 +121,7 @@ function SignUpForm() {
         </Form.Field>
 
         <Form.Submit asChild>
-          <button className="flex items-center justify-center rounded-md bg-blue-bupt w-auto py-1.5 text-zinc-50 font-medium mt-5 tracking-[4px] shadow hover:bg-v-success-dark duration-200">
+          <button className="flex items-center justify-center rounded-md bg-blue-bupt w-auto py-1.5 text-zinc-50 font-medium mt-5 tracking-[4px] shadow hover:bg-v-success-dark duration-200 ">
             注册
           </button>
         </Form.Submit>
