@@ -1,4 +1,5 @@
 
+import Link from "next/link";
 import { FilePlus, Folder, Grid, List } from "react-feather";
 
 // Map of links to display in the side navigation.
@@ -24,14 +25,14 @@ export default function NavLinks() {
       {links.map((link) => {
         const LinkIcon = link.icon;
         return (
-          <a
+          <Link
             key={link.name}
             href={link.href}
-            className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-zinc-50 p-3 text-sm font-medium hover:bg-success-lighter/30 hover:text-blue-bupt md:flex-none md:justify-start md:p-2 md:px-3"
+            className="flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-success-lighter/30 hover:text-blue-bupt md:flex-none md:justify-start md:p-2 md:px-3"
           >
             <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
-          </a>
+          </Link>
         );
       })}
     </>

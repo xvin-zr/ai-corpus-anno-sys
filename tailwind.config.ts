@@ -23,19 +23,19 @@ const config: Config = {
         "950": "#172554",
         bupt: "#003399",
       },
-      error: {
+      "v-error": {
         lighter: "#f7d4d6",
         light: "#ff1a1a",
         DEFAULT: "#e00",
         dark: "#c50000",
       },
-      success: {
+      "v-success": {
         lighter: "#d3e5ff",
         light: "#3291ff",
         DEFAULT: "#0070f3",
         dark: "#0761d1",
       },
-      warning: {
+      "v-warning": {
         lighter: "#ffefcf",
         light: "#f7b955",
         DEFAULT: "#f5a623",
@@ -64,6 +64,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 };
 export default config;

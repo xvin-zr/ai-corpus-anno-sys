@@ -11,7 +11,7 @@ export default async function SideNav() {
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
       <Link
-        className="mb-6 flex h-5 items-center justify-start rounded-md bg-blue-bupt dark:bg-success-dark p-4 md:h-16"
+        className="mb-6 flex h-5 items-center justify-start rounded-md bg-blue-bupt dark:bg-v-success-dark p-4 md:h-16"
         href="/"
       >
         <div className="flex gap-1 items-center justify-center w-32 text-zinc-50 text-xl font-semibold tracking-wider md:w-40">
@@ -23,8 +23,8 @@ export default async function SideNav() {
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form>
           <Link
-            href={"/profile"}
-            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-success-lighter/30 hover:text-blue-bupt md:flex-none md:justify-start md:p-2 md:px-3 "
+            href={"/dashboard/profile"}
+            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-success-lighter/30 hover:text-blue-bupt md:flex-none md:justify-start md:p-2 md:px-3 "
           >
             <User />
             <div className="hidden md:block">
@@ -33,7 +33,7 @@ export default async function SideNav() {
           </Link>
           <Link
             href={"/api/auth/signout"}
-            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-error-lighter/30 hover:text-error md:flex-none md:justify-start md:p-2 md:px-3"
+            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-error-lighter/30 hover:text-v-error md:flex-none md:justify-start md:p-2 md:px-3"
           >
             <LogOut />
             <div className="hidden md:block">退出</div>
