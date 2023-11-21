@@ -20,9 +20,12 @@ export async function POST(request: NextRequest) {
     const body: RegisterInfo = await request.json();
     const validation = registerSchema.safeParse(body);
     if (!validation.success) {
-      return NextResponse.json(validation.error.errors, {
-        status: 400,
-      });
+      return NextResponse.json(
+        { error: validation.error.errors[0].message },
+        {
+          status: 400,
+        }
+      );
     }
 
     const user = await prisma.user.findUnique({
@@ -43,7 +46,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { email: newUser.email, name: newUser.name },
+      { email: newUser.email, name: newUser.name, msg: "注册成功" },
       { status: 200 }
     );
   } catch (error) {
