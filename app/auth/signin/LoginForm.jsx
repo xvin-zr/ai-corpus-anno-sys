@@ -81,7 +81,7 @@ function LoginForm() {
         </Form.Field>
 
         <Form.Submit asChild>
-          <button className="flex items-center justify-center rounded-md bg-blue-bupt w-auto py-1.5 text-zinc-50 font-medium mt-5 tracking-[4px] shadow hover:bg-success-dark duration-200">
+          <button className="flex items-center justify-center rounded-md bg-blue-bupt w-auto py-1.5 text-zinc-50 font-medium mt-5 tracking-[4px] shadow hover:bg-v-success-dark duration-200">
             登录
           </button>
         </Form.Submit>
@@ -99,7 +99,7 @@ function LoginForm() {
         还没有帐号？
         <Link
           href="#"
-          className="flex items-center gap-2 text-blue-bupt hover:text-success-dark duration-200"
+          className="flex items-center gap-2 text-blue-bupt hover:text-v-success-dark duration-200"
         >
           去注册 <ArrowRightCircle size={16} />
         </Link>
