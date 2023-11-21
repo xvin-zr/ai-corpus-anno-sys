@@ -128,12 +128,12 @@ function SignUpForm() {
       </Form.Root>
 
       <span className=" w-auto flex items-center justify-center">
-        已有帐号？
+        已有账号？
         <Link
           href="/auth/signin"
           className="flex items-center gap-2 text-blue-bupt hover:text-v-success-dark duration-200"
         >
-          去登陆 <ArrowRightCircle size={16} />
+          去登录 <ArrowRightCircle size={16} />
         </Link>
       </span>
     </>
