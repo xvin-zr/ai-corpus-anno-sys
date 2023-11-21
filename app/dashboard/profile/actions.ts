@@ -19,8 +19,8 @@ export async function updatePassword(preState: any, formData: FormData) {
       .object({
         email: z.string().email(),
         oldPassword: z.string(),
-        newPassword: z.string().min(6),
-        confirmPassword: z.string().min(6),
+        newPassword: z.string().min(6, "密码至少 6 个字符"),
+        confirmPassword: z.string().min(6, "密码至少 6 个字符"),
       })
       .safeParse({
         email,

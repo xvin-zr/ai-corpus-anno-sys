@@ -30,6 +30,7 @@ function LoginForm() {
         router.push(callbackUrl);
       } else {
         console.error("sign in error");
+        alert("登录失败，请检查您的邮箱和密码是否正确");
       }
     } catch (error) {
       console.error(error);

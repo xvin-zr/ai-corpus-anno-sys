@@ -5,8 +5,8 @@ import bcrypt from "bcrypt";
 
 const registerSchema = z.object({
   email: z.string().email(),
-  name: z.string().min(2),
-  password: z.string().min(6),
+  name: z.string().min(2, "用户名至少 2 个字符"),
+  password: z.string().min(6, "密码至少 6 个字符"),
 });
 
 interface RegisterInfo {

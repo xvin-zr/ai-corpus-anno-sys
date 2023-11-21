@@ -10,7 +10,7 @@ export async function PUT(req: NextRequest) {
       .object({
         email: z.string().email(),
         oldPassword: z.string(),
-        newPassword: z.string().min(6),
+        newPassword: z.string().min(6, "密码至少 6 个字符"),
       })
       .safeParse(body);
 
