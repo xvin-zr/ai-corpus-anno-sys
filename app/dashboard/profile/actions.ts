@@ -29,13 +29,13 @@ export async function updatePassword(preState: any, formData: FormData) {
         confirmPassword,
       });
     if (!parsed.success) {
-      revalidatePath('/dashboard/profile');
+      revalidatePath("/dashboard/profile");
       return { msg: "长度至少为 6" };
     }
 
     // 两次密码不一致
     if (newPassword !== confirmPassword) {
-      revalidatePath('/dashboard/profile');
+      revalidatePath("/dashboard/profile");
       return { msg: "请输入两次相同的密码" };
     }
 
@@ -46,6 +46,7 @@ export async function updatePassword(preState: any, formData: FormData) {
       },
     });
     if (!user) {
+      revalidatePath("/dashboard/profile");
       return { msg: "用户不存在" };
     }
 
@@ -56,6 +57,7 @@ export async function updatePassword(preState: any, formData: FormData) {
         user.hashedPassword
       );
       if (!passwordMatch) {
+        revalidatePath("/dashboard/profile");
         return { msg: "旧密码不正确" };
       }
     }
@@ -69,10 +71,11 @@ export async function updatePassword(preState: any, formData: FormData) {
       },
     });
 
-    revalidatePath('/dashboard/profile');
+    revalidatePath("/dashboard/profile");
     return { msg: "更新成功", name: updatedUser.name };
   } catch (error) {
     console.error("UPDATE PASSWORD", error);
+    revalidatePath("/dashboard/profile");
     return { msg: "更新密码失败" };
   }
 }
