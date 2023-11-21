@@ -33,7 +33,11 @@ export async function updatePassword(preState: any, formData: FormData) {
       return { msg: "长度至少为 6" };
     }
 
-    // TODO 两次密码不一致
+    // 两次密码不一致
+    if (newPassword !== confirmPassword) {
+      revalidatePath('/dashboard/profile');
+      return { msg: "请输入两次相同的密码" };
+    }
 
     // 是否存在用户
     const user = await prisma.user.findUnique({
