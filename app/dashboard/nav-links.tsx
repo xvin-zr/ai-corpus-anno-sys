@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import { FilePlus, Folder, Grid, List } from "react-feather";
 
@@ -28,7 +27,7 @@ export default function NavLinks() {
           <Link
             key={link.name}
             href={link.href}
-            className="flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-success-lighter/30 hover:text-blue-bupt md:flex-none md:justify-start md:p-2 md:px-3"
+            className="flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-success-lighter/30 hover:text-blue-bupt dark:hover:bg-v-success-light/30 dark:hover:text-v-success-light md:flex-none md:justify-start md:p-2 md:px-3"
           >
             <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>

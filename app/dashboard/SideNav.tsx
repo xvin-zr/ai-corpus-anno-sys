@@ -5,26 +5,25 @@ import { LogOut } from "react-feather";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 
-
 export default async function SideNav() {
   const session = await getServerSession(authOptions);
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
       <Link
-        className="mb-6 flex h-5 items-center justify-start rounded-md bg-blue-bupt dark:bg-v-success-dark p-4 md:h-16"
+        className="mb-6 flex h-5 items-center justify-start rounded-md bg-blue-bupt p-4 dark:bg-v-success-dark md:h-16"
         href="/"
       >
-        <div className="flex gap-1 items-center justify-center w-32 text-zinc-50 text-xl font-semibold tracking-wider md:w-40">
+        <div className="flex w-32 items-center justify-center gap-1 text-xl font-semibold tracking-wider text-zinc-50 md:w-40">
           语料标注 <PenTool />
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <NavLinks />
-        <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
+        <div className="bg-gray-50 hidden h-auto w-full grow rounded-md md:block"></div>
         <form>
           <Link
             href={"/dashboard/profile"}
-            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-success-lighter/30 hover:text-blue-bupt md:flex-none md:justify-start md:p-2 md:px-3 "
+            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-success-lighter/30 hover:text-blue-bupt dark:hover:bg-v-success-light/30 dark:hover:text-v-success-light md:flex-none md:justify-start md:p-2 md:px-3"
           >
             <User />
             <div className="hidden md:block">
@@ -33,7 +32,7 @@ export default async function SideNav() {
           </Link>
           <Link
             href={"/api/auth/signout"}
-            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-error-lighter/30 hover:text-v-error md:flex-none md:justify-start md:p-2 md:px-3"
+            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-error-lighter/30 hover:text-v-error dark:hover:bg-v-error-light/30 dark:hover:text-v-error-light md:flex-none md:justify-start md:p-2 md:px-3"
           >
             <LogOut />
             <div className="hidden md:block">退出</div>
