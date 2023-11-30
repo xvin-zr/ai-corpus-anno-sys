@@ -1,22 +1,12 @@
 "use client";
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { User } from "react-feather";
-import { string } from "zod";
 
-interface Session {
-  user: {
-    name: string;
-    email: string;
-    image: string | null;
-  };
-}
-
-function ProfileLink() {
-  const { data: session, status } = useSession();
+function ProfileLink({ session }: { session: Session | null }) {
   const pathname = usePathname();
 
   const user = session?.user;
@@ -31,12 +21,7 @@ function ProfileLink() {
       )}
     >
       <User />
-      {status === "loading" && (
-        <span className="loading loading-dots loading-sm"></span>
-      )}
-      {status === "authenticated" && (
-        <div className="hidden md:block">{user ? user.name : "个人资料"}</div>
-      )}
+      <div className="hidden md:block">{user ? user.name : "个人资料"}</div>
     </Link>
   );
 }
