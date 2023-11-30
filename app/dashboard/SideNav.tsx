@@ -4,6 +4,7 @@ import { PenTool, User } from "react-feather";
 import { LogOut } from "react-feather";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import ProfileLink from "./ProfileLink";
 
 export default async function SideNav() {
   const session = await getServerSession(authOptions);
@@ -21,15 +22,7 @@ export default async function SideNav() {
         <NavLinks />
         <div className="bg-gray-50 hidden h-auto w-full grow rounded-md md:block"></div>
         <form>
-          <Link
-            href={"/dashboard/profile"}
-            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-success-lighter/30 hover:text-blue-bupt dark:hover:bg-v-success-light/30 dark:hover:text-v-success-light md:flex-none md:justify-start md:p-2 md:px-3"
-          >
-            <User />
-            <div className="hidden md:block">
-              {session ? session.user?.name : "个人资料"}
-            </div>
-          </Link>
+          <ProfileLink />
           <Link
             href={"/api/auth/signout"}
             className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-v-error-lighter/30 hover:text-v-error dark:hover:bg-v-error-light/30 dark:hover:text-v-error-light md:flex-none md:justify-start md:p-2 md:px-3"
