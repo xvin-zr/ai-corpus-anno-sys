@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
 import { updatePassword } from "./actions";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { CheckCircle, Divide, XCircle } from "react-feather";
+import ProfileBtn from "./ProfileBtn";
 
 const initState = {
   msg: "",
@@ -13,10 +14,6 @@ function ProfilePage() {
   const [state, formAction] = useFormState(updatePassword, initState);
   const inputStyle = "border ";
 
-  function handleClick() {
-    if (state?.msg && state.name) alert(state?.msg + state?.name);
-    else if (state?.msg) alert(state?.msg);
-  }
 
   return (
     <div>
@@ -40,17 +37,15 @@ function ProfilePage() {
           />
         </label>
 
-        <button onClick={handleClick} className="text-left" type="submit">
-          更新密码
-        </button>
+        <ProfileBtn />
         {state?.name && (
-          <div className="alert bg-v-success-dark rounded-lg flex items-center text-zinc-50 font-medium">
+          <div className="alert flex items-center rounded-lg bg-v-success-dark font-medium text-zinc-50">
             <CheckCircle />
             {state.msg}
           </div>
         )}
         {!state?.name && state?.msg && (
-          <div className="alert bg-v-error rounded-lg text-zinc-50 flex items-center font-medium">
+          <div className="alert flex items-center rounded-lg bg-v-error font-medium text-zinc-50">
             <XCircle />
             {state?.msg}
           </div>
