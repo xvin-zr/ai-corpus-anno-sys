@@ -1,9 +1,7 @@
 "use client";
-import React from "react";
-import { updatePassword } from "./actions";
-import { useFormState, useFormStatus } from "react-dom";
-import { CheckCircle, Divide, XCircle } from "react-feather";
+import { useFormState } from "react-dom";
 import ProfileBtn from "./ProfileBtn";
+import { updatePassword } from "./actions";
 
 const initState = {
   msg: "",
@@ -14,18 +12,28 @@ function ProfilePage() {
   const [state, formAction] = useFormState(updatePassword, initState);
   const inputStyle = "border ";
 
-
   return (
     <div>
       <form action={formAction} className="flex flex-col gap-4">
         <label>
           <span>旧密码</span>
-          <input className={inputStyle} type="password" name="oldPassword" />
+          <input
+            className={inputStyle}
+            type="password"
+            name="oldPassword"
+            min={6}
+          />
         </label>
 
         <label>
           <span>新密码</span>
-          <input className={inputStyle} type="password" name="newPassword" />
+          <input
+            className={inputStyle}
+            type="password"
+            name="newPassword"
+            min={6}
+            required
+          />
         </label>
 
         <label>
@@ -34,22 +42,12 @@ function ProfilePage() {
             className={inputStyle}
             type="password"
             name="confirmPassword"
+            min={6}
+            required
           />
         </label>
 
-        <ProfileBtn />
-        {state?.name && (
-          <div className="alert flex items-center rounded-lg bg-v-success-dark font-medium text-zinc-50">
-            <CheckCircle />
-            {state.msg}
-          </div>
-        )}
-        {!state?.name && state?.msg && (
-          <div className="alert flex items-center rounded-lg bg-v-error font-medium text-zinc-50">
-            <XCircle />
-            {state?.msg}
-          </div>
-        )}
+        <ProfileBtn state={state} />
       </form>
     </div>
   );
