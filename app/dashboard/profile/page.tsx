@@ -2,6 +2,7 @@
 import { useFormState } from "react-dom";
 import ProfileBtn from "./ProfileBtn";
 import { updatePassword } from "./actions";
+import { Toaster } from "react-hot-toast";
 
 const initState = {
   msg: "",

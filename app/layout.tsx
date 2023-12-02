@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./auth/Provider";
+import dynamic from "next/dynamic";
+// import ToasterComponent from "./ToasterComponent";
+const ToasterComponent = dynamic(() => import("./ToasterComponent"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const notoSansSC = Noto_Sans_SC({
@@ -27,6 +32,7 @@ export default function RootLayout({
         <AuthProvider>
           <main className="">{children}</main>
         </AuthProvider>
+        <ToasterComponent />
       </body>
     </html>
   );
