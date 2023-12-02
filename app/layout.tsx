@@ -3,8 +3,8 @@ import { Inter, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./auth/Provider";
 import dynamic from "next/dynamic";
-// import ToasterComponent from "./ToasterComponent";
-const ToasterComponent = dynamic(() => import("./ToasterComponent"), {
+
+const Toaster = dynamic(() => import("./Toaster"), {
   ssr: false,
 });
 
@@ -32,7 +32,7 @@ export default function RootLayout({
         <AuthProvider>
           <main className="">{children}</main>
         </AuthProvider>
-        <ToasterComponent />
+        <Toaster />
       </body>
     </html>
   );

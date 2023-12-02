@@ -30,7 +30,7 @@ export async function updatePassword(preState: any, formData: FormData) {
       });
     if (!parsed.success) {
       revalidatePath("/dashboard/profile");
-      return { msg: "长度至少为 6" };
+      return { msg: "密码长度至少为 6" };
     }
 
     // 两次密码不一致
@@ -76,6 +76,6 @@ export async function updatePassword(preState: any, formData: FormData) {
   } catch (error) {
     console.error("UPDATE PASSWORD", error);
     revalidatePath("/dashboard/profile");
-    return { msg: "更新密码失败" };
+    return { msg: "更新密码失败，稍后再试" };
   }
 }
