@@ -1,21 +1,11 @@
-"use client";
-import { useFormState } from "react-dom";
 import ProfileBtn from "./ProfileBtn";
-import { updatePassword } from "./actions";
-import { Toaster } from "react-hot-toast";
-
-const initState = {
-  msg: "",
-  name: "",
-};
 
 function ProfilePage() {
-  const [state, formAction] = useFormState(updatePassword, initState);
   const inputStyle = "border ";
 
   return (
     <div>
-      <form action={formAction} className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4">
         <label>
           <span>旧密码</span>
           <input
@@ -48,7 +38,7 @@ function ProfilePage() {
           />
         </label>
 
-        <ProfileBtn state={state} />
+        <ProfileBtn />
       </form>
     </div>
   );

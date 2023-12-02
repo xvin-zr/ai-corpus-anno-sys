@@ -1,28 +1,25 @@
 "use client";
-import * as Toast from "@radix-ui/react-toast";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
-import { useFormStatus } from "react-dom";
+import { useEffect } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 import { CheckCircle, XCircle } from "react-feather";
 import toast from "react-hot-toast";
+import { updatePassword } from "./actions";
 
-interface Props {
-  state:
-    | {
-        msg: string;
-        name?: string | null;
-      }
-    | undefined;
-}
+const initState = {
+  msg: "",
+  name: "",
+};
 
-function ProfileBtn({ state }: Props) {
+function ProfileBtn() {
   const { pending } = useFormStatus();
-
+  const [state, updatePasswordAction] = useFormState(updatePassword, initState);
 
   useEffect(() => {
-    if (!state) return;
-    const toastStyle =
-      "flex items-center gap-2 rounded-md shadow px-4 py-3 text-lg font-semibold text-zinc-50 tracking-wider";
+    if (!state || !state.msg) return;
+    const toastStyle = clsx(
+      "flex items-center gap-2 rounded-md px-5 py-3 text-lg font-semibold tracking-wider text-zinc-50 shadow",
+    );
     if (!state.name) {
       toast.custom(
         <div className={toastStyle + " " + "bg-v-error"}>
@@ -43,9 +40,9 @@ function ProfileBtn({ state }: Props) {
   return (
     <button
       className="flex w-24 items-center justify-center bg-blue-bupt text-zinc-50 disabled:cursor-not-allowed"
-      type="submit"
       aria-disabled={pending}
       disabled={pending}
+      formAction={updatePasswordAction}
     >
       更新密码{" "}
       {pending && <span className="loading loading-spinner loading-xs" />}
