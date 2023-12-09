@@ -1,10 +1,9 @@
-import Link from "next/link";
-import NavLinks from "./nav-links";
-import { PenTool } from "react-feather";
-import { LogOut } from "react-feather";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import Link from "next/link";
+import { LogOut, PenTool } from "react-feather";
+import { authOptions } from "../api/auth/[...nextauth]/auth-option";
 import ProfileLink from "./ProfileLink";
+import NavLinks from "./nav-links";
 
 export default async function SideNav() {
   const session = await getServerSession(authOptions);

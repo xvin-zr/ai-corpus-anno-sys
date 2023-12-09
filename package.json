@@ -21,6 +21,7 @@
     "react-dom": "^18",
     "react-feather": "^2.0.10",
     "react-hot-toast": "^2.4.1",
+    "sharp": "^0.33.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

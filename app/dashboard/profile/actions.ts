@@ -1,10 +1,11 @@
 "use server";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
 import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
-import { z } from "zod";
 import bcrypt from "bcrypt";
+import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 export async function updatePassword(preState: any, formData: FormData) {
   try {
