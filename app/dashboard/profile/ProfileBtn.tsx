@@ -5,6 +5,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { CheckCircle, XCircle } from "react-feather";
 import toast from "react-hot-toast";
 import { updatePassword } from "./actions";
+import "animate.css";
 
 const initState = {
   msg: "",
@@ -18,7 +19,7 @@ function ProfileBtn() {
   useEffect(() => {
     if (!state || !state.msg) return;
     const toastStyle = clsx(
-      "flex items-center gap-2 rounded-md px-5 py-3 text-lg font-semibold tracking-wider text-zinc-50 shadow",
+      "animate__animated animate__fadeInRight animate__faster flex items-center gap-2 rounded-md px-5 py-3 text-lg font-semibold tracking-wider text-zinc-50 shadow",
     );
     if (!state.name) {
       toast.custom(
