@@ -1,11 +1,11 @@
 "use client";
+import "animate.css";
 import clsx from "clsx";
 import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { CheckCircle, XCircle } from "react-feather";
 import toast from "react-hot-toast";
 import { updatePassword } from "./actions";
-import "animate.css";
 
 const initState = {
   msg: "",
