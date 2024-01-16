@@ -27,16 +27,16 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Link
-                className="bg-gray-900 text-gray-50 hover:bg-gray-900/90 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 inline-flex h-10 items-center justify-center rounded-md px-8 text-sm font-medium shadow transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-blue-bupt px-8 text-sm font-medium text-zinc-50 shadow transition-colors hover:bg-blue-bupt/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-v-success-dark dark:hover:bg-v-success dark:focus-visible:ring-zinc-300"
                 href="/auth/signin"
               >
-                Sign In
+                登录
               </Link>
               <Link
-                className="border-gray-200 border-gray-200 bg-white hover:bg-gray-100 hover:text-gray-900 focus-visible:ring-gray-950 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300 inline-flex h-10 items-center justify-center rounded-md border px-8 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+                className="focus-visible:ring-gray-950 dark:focus-visible:ring-gray-300 inline-flex h-10 items-center justify-center rounded-md border border-blue-bupt bg-zinc-50 px-8 text-sm font-medium text-blue-bupt shadow-sm transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 dark:border-v-success-dark dark:bg-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-800"
                 href="/auth/signup"
               >
-                Sign Up
+                注册
               </Link>
             </div>
           </div>
