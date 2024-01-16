@@ -106,7 +106,7 @@ function LoginForm() {
       </Form.Root>
       <div className="or-line flex w-1/2 items-center justify-center gap-5 text-zinc-400">
         <hr className="grow" />
-        <p className="flex items-center justify-center">或 者</p>
+        <p className="flex items-center justify-center">或</p>
         <hr className="grow" />
       </div>
       <button
@@ -120,7 +120,7 @@ function LoginForm() {
         还没有帐号？
         <Link
           href="/auth/signup"
-          className="flex items-center gap-2 text-blue-bupt duration-200 hover:text-v-success-dark"
+          className="flex items-center gap-2 text-blue-bupt duration-200 hover:text-v-success-dark dark:text-v-success-dark dark:hover:text-v-success"
         >
           去注册 <ArrowRightCircle size={16} />
         </Link>

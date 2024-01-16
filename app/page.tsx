@@ -33,7 +33,7 @@ export default function Home() {
                 登录
               </Link>
               <Link
-                className="focus-visible:ring-gray-950 dark:focus-visible:ring-gray-300 inline-flex h-10 items-center justify-center rounded-md border border-blue-bupt bg-zinc-50 px-8 text-sm font-medium text-blue-bupt shadow-sm transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 dark:border-v-success-dark dark:bg-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-800"
+                className="focus-visible:ring-gray-950 dark:focus-visible:ring-gray-300 inline-flex h-10 items-center justify-center rounded-md border border-blue-bupt bg-zinc-50 px-8 text-sm font-medium text-blue-bupt shadow-sm transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 dark:border-zinc-50 dark:bg-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-800"
                 href="/auth/signup"
               >
                 注册

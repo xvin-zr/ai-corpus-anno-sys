@@ -18,7 +18,7 @@ function SignInPage() {
       <div className="hero-form-section flex flex-col items-center justify-center gap-4">
         {/* <div className="icon h-[24px] w-[24px] text-xl -mt-5 ">&times;</div> */}
         <svg
-          className="with-icon_icon__MHUeb h-12 w-12 stroke-blue-bupt"
+          className="with-icon_icon__MHUeb h-12 w-12 stroke-blue-bupt dark:stroke-v-success-dark"
           data-testid="geist-icon"
           fill="none"
           shapeRendering="geometricPrecision"

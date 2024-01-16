@@ -133,7 +133,7 @@ function SignUpForm() {
         已有账号？
         <Link
           href="/auth/signin"
-          className="flex items-center gap-2 text-blue-bupt duration-200 hover:text-v-success-dark"
+          className="flex items-center gap-2 text-blue-bupt duration-200 hover:text-v-success-dark dark:text-v-success-dark dark:hover:text-v-success"
         >
           去登录 <ArrowRightCircle size={16} />
         </Link>
