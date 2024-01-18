@@ -1,46 +1,96 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
+import prisma from "@/prisma/client";
+import { getServerSession } from "next-auth";
 import ProfileBtn from "./ProfileBtn";
 
-function ProfilePage() {
-  const inputStyle = "border ";
+async function fetchBalance(): Promise<number> {
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
+  if (!user?.email) return -1;
+  try {
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+    });
+    if (foundUser?.balance) return foundUser.balance.toNumber();
+    else return -1;
+  } catch (error) {
+    console.error(error);
+  }
+  return -1;
+}
+
+async function ProfilePage() {
+  const inputStyle =
+    "peer inline-block rounded px-2 py-1 shadow-sm ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success";
+  const labelStyle = "block space-y-1";
+  const labelSpanStyle = "block text-xl font-medium";
+
+  const balance = await fetchBalance();
 
   return (
-    <div>
+    <>
+      <h1 className="mb-6 text-3xl font-bold">个人资料</h1>
+
       <form className="flex flex-col gap-4">
-        <label>
-          <span>旧密码</span>
+        <label className={labelStyle}>
+          <span className={labelSpanStyle}>余额</span>
+          <input
+            className={inputStyle}
+            type="number"
+            value={balance}
+            readOnly
+            disabled
+          />
+        </label>
+
+        <hr className="my-2 w-72 text-zinc-500" />
+
+        <label className={labelStyle}>
+          <span className={labelSpanStyle}>旧密码</span>
           <input
             className={inputStyle}
             type="password"
             name="oldPassword"
-            min={6}
+            minLength={6}
           />
+          <span className="invisible ml-3 inline-block text-v-warning peer-focus:visible">
+            如果未设置密码，则无需输入
+          </span>
         </label>
 
-        <label>
-          <span>新密码</span>
+        <label className={labelStyle}>
+          <span className={labelSpanStyle}>新密码</span>
           <input
             className={inputStyle}
             type="password"
             name="newPassword"
-            min={6}
+            minLength={6}
             required
           />
+          <span className="invisible ml-3 inline-block text-v-error-light peer-invalid:peer-focus:visible">
+            密码长度至少为 6
+          </span>
         </label>
 
-        <label>
-          <span>确认密码</span>
+        <label className={labelStyle}>
+          <span className={labelSpanStyle}>确认密码</span>
           <input
             className={inputStyle}
             type="password"
             name="confirmPassword"
-            min={6}
+            minLength={6}
             required
           />
+          <span className="invisible ml-3 inline-block text-v-error-light peer-invalid:peer-focus:visible">
+            密码长度至少为 6
+          </span>
         </label>
 
         <ProfileBtn />
       </form>
-    </div>
+    </>
   );
 }
 

@@ -40,7 +40,7 @@ function ProfileBtn() {
 
   return (
     <button
-      className="flex w-24 items-center justify-center bg-blue-bupt text-zinc-50 disabled:cursor-not-allowed"
+      className="mt-4 flex h-10 w-36 items-center justify-center rounded-md bg-blue-bupt px-6 text-base font-medium text-zinc-50 shadow transition-colors hover:bg-blue-bupt/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 group-invalid:pointer-events-none group-invalid:opacity-50 dark:bg-v-success-dark dark:hover:bg-v-success dark:focus-visible:ring-zinc-300"
       aria-disabled={pending}
       disabled={pending}
       formAction={updatePasswordAction}
