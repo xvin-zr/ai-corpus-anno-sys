@@ -7,18 +7,18 @@ import { usePathname } from "next/navigation";
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: "我的标注任务", href: "/dashboard", icon: Folder },
+  { name: "我的标注任务", href: "/dashboard/my-missions", icon: Folder },
   {
     name: "发布任务",
-    href: "/dashboard/invoices",
+    href: "/dashboard/publish",
     icon: FilePlus,
   },
   {
     name: "寻找任务",
-    href: "/dashboard/",
+    href: "/dashboard/market",
     icon: Grid,
   },
-  { name: "历史记录", href: "/dashboard/customers", icon: List },
+  { name: "历史记录", href: "/dashboard/history", icon: List },
 ];
 
 export default function NavLinks() {
