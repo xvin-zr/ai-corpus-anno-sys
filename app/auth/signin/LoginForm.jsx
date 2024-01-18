@@ -68,7 +68,7 @@ function LoginForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-10 rounded-md border-none bg-zinc-100 px-3 text-lg shadow ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-900"
+              className="h-10 rounded-md border-none bg-zinc-100 px-3 text-lg shadow ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-900 dark:focus:ring-v-success"
               placeholder="bupt@example.com"
               required
             />
@@ -85,7 +85,7 @@ function LoginForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-10 rounded-md border-none bg-zinc-100 px-2 text-xl shadow ring-1 ring-inset ring-zinc-300 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-900"
+              className="h-10 rounded-md border-none bg-zinc-100 px-2 text-xl shadow ring-1 ring-inset ring-zinc-300 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-900 dark:focus:ring-v-success"
               min={6}
               required
             />
@@ -94,7 +94,7 @@ function LoginForm() {
 
         <Form.Submit asChild>
           <button
-            className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow duration-200 hover:bg-v-success-dark"
+            className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow transition-colors hover:bg-v-success-dark"
             aria-disabled={pending}
           >
             登录{" "}
@@ -111,7 +111,7 @@ function LoginForm() {
       </div>
       <button
         onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
-        className="flex w-7/12 items-center justify-center gap-2 rounded-md bg-black  py-1.5 font-medium text-zinc-50  shadow duration-200 hover:bg-[#333]"
+        className="flex w-7/12 items-center justify-center gap-2 rounded-md bg-black  py-1.5 font-medium text-zinc-50  shadow transition-colors hover:bg-black/30"
       >
         <GitHub size={20} />
         通过 GitHub 登录
