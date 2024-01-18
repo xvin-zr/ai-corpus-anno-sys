@@ -37,22 +37,146 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String?   @unique
-  hashedPassword String?
-  createdAt      DateTime  @default(now())
-  emailVerified  DateTime?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  hashedPassword String?
+  balance        Decimal   @default(0) @db.Money
+  createdAt      DateTime  @default(now())
+  isAdmin        Boolean   @default(false)
+  emailVerified  DateTime?
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+}
+
+model Image {
+  id               Int             @id
+  url              String          @unique
+  width            Int?
+  height           Int?
+  filename         String?
+  flickrUrl        String?
+  cocoUrl          String?
+  createdAt        DateTime        @default(now())
+  Mission          Mission?        @relation(fields: [missionId], references: [id])
+  missionId        String?
+  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
+  cocoAnnotationId String?
+}
+
+model Mission {
+  id               String          @id @default(cuid())
+  images           Image[]
+  title            String
+  cocoAnnotation   CocoAnnotation?
+  cocoAnnotationId String
+  publisherId      String
+  recipientId      String?
+  createdAt        DateTime        @default(now())
+  description      String?         @db.Text
+  status           MissionStatus   @default(PENDING_ACCEPT)
+  reward           Int?
+}
+
+enum MissionStatus {
+  PENDING_ACCEPT
+  ONGOING
+  PENDING_REVIEW
+  COMPLETED
+}
+
+model CocoAnnotation {
+  id          String       @id @default(cuid())
+  info        Info?
+  licenses    License[]
+  images      Image[]
+  annotations Annotation[]
+  categories  Category[]
+  mission     Mission      @relation(fields: [missionId], references: [id])
+  missionId   String       @unique
+}
+
+model W3CAnnotation {
+  id             String       @id
+  w3cAnnotations Json[]
+  annotations    Annotation[]
+}
+
+// 从 W3C 格式转化而来
+model Annotation {
+  id               Int             @id @default(autoincrement())
+  imageId          Int
+  categoryId       Int
+  segmentation     Segmentation    @default(RLE)
+  area             Float
+  // bbox             BBox?
+  xMin             Float
+  yMin             Float
+  width            Float
+  height           Float
+  isCrowd          Boolean
+  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
+  cocoAnnotationId String?
+  W3CAnnotation    W3CAnnotation?  @relation(fields: [w3CAnnotationId], references: [id])
+  w3CAnnotationId  String?
+}
+
+enum Segmentation {
+  RLE
+  POLYGON
+}
+
+// model BBox {
+//   xmin         Float
+//   ymin         Float
+//   width        Float
+//   height       Float
+//   annotation   Annotation @relation(fields: [annotationId], references: [id])
+//   annotationId Int        @id @unique
+// }
+
+model Info {
+  id               String         @id @default(cuid())
+  year             Int
+  createdAt        DateTime       @default(now())
+  version          String
+  description      String         @db.Text
+  contributor      String
+  url              String
+  cocoAnnotation   CocoAnnotation @relation(fields: [cocoAnnotationId], references: [id])
+  cocoAnnotationId String         @unique
+}
+
+model Category {
+  id               Int             @id
+  name             String?
+  supercategory    String?
+  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
+  cocoAnnotationId String?
+}
+
+model License {
+  id               String          @id @default(cuid())
+  name             String?
+  url              String?
+  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
+  cocoAnnotationId String?
+}
+
+model Statistic {
+  missionId   String   @id
+  createdAt   DateTime @default(now())
+  publisherId String
+  recipientId String?
+  profit      Decimal  @db.Money
 }
