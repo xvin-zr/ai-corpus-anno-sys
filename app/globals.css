@@ -16,6 +16,15 @@
   }
 }
 
+/* html {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    sans-serif;
+} */
+
 body {
   color: rgb(var(--foreground-rgb));
 }
