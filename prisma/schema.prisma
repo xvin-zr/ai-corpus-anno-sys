@@ -80,8 +80,8 @@ model Mission {
   title          String
   cocoAnnotation CocoAnnotation?
   // cocoAnnotationId String
-  publisherId    String
-  recipientId    String?
+  publisherEmail String
+  recipientEmail String?
   createdAt      DateTime        @default(now())
   description    String?         @db.Text
   comment        String?         @db.Text

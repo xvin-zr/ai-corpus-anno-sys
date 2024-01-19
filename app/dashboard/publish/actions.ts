@@ -56,7 +56,7 @@ export async function publishMission(
     const mission = await prisma.mission.create({
       data: {
         title: parsed.data.title,
-        publisherId: email,
+        publisherEmail: email,
         reward: new Decimal(parsed.data.reward),
         description: parsed.data.description,
         imagesId: images.map((img) => img.id),
