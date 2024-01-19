@@ -60,7 +60,7 @@ model User {
 }
 
 model Image {
-  id               Int             @id
+  id               String          @id
   url              String          @unique
   width            Int?
   height           Int?
@@ -68,30 +68,33 @@ model Image {
   flickrUrl        String?
   cocoUrl          String?
   createdAt        DateTime        @default(now())
-  Mission          Mission?        @relation(fields: [missionId], references: [id])
+  Mission          Mission?        @relation(fields: [missionId], references: [id], onDelete: Cascade)
   missionId        String?
-  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
+  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id], onDelete: Cascade)
   cocoAnnotationId String?
 }
 
 model Mission {
-  id               String          @id @default(cuid())
-  images           Image[]
-  title            String
-  cocoAnnotation   CocoAnnotation?
-  cocoAnnotationId String
-  publisherId      String
-  recipientId      String?
-  createdAt        DateTime        @default(now())
-  description      String?         @db.Text
-  status           MissionStatus   @default(PENDING_ACCEPT)
-  reward           Int?
+  id             String          @id @default(cuid())
+  imagesId       String[]
+  title          String
+  cocoAnnotation CocoAnnotation?
+  // cocoAnnotationId String
+  publisherId    String
+  recipientId    String?
+  createdAt      DateTime        @default(now())
+  description    String?         @db.Text
+  comment        String?         @db.Text
+  status         MissionStatus   @default(PENDING_ACCEPT)
+  reward         Decimal?        @db.Money
+  Image          Image[]
 }
 
 enum MissionStatus {
   PENDING_ACCEPT
   ONGOING
   PENDING_REVIEW
+  PENDING_IMPROVE
   COMPLETED
 }
 
@@ -102,7 +105,7 @@ model CocoAnnotation {
   images      Image[]
   annotations Annotation[]
   categories  Category[]
-  mission     Mission      @relation(fields: [missionId], references: [id])
+  mission     Mission      @relation(fields: [missionId], references: [id], onDelete: Cascade)
   missionId   String       @unique
 }
 
@@ -152,8 +155,8 @@ model Info {
   version          String
   description      String         @db.Text
   contributor      String
-  url              String
-  cocoAnnotation   CocoAnnotation @relation(fields: [cocoAnnotationId], references: [id])
+  url              String?
+  cocoAnnotation   CocoAnnotation @relation(fields: [cocoAnnotationId], references: [id], onDelete: Cascade)
   cocoAnnotationId String         @unique
 }
 
