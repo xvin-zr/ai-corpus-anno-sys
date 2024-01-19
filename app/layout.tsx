@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./auth/Provider";
 import dynamic from "next/dynamic";
+import { Provider } from "jotai";
 
 const Toaster = dynamic(() => import("./Toaster"), {
   ssr: false,
@@ -29,9 +30,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${notoSansSC.variable} min-h-screen bg-zinc-50 font-sans dark:bg-zinc-900`}
       >
-        <AuthProvider>
-          <main className="">{children}</main>
-        </AuthProvider>
+        <Provider>
+          <AuthProvider>
+            <main className="">{children}</main>
+          </AuthProvider>
+        </Provider>
         <Toaster />
       </body>
     </html>
