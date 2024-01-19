@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { FilePlus, Folder, Grid, List } from "react-feather";
+import { FilePlus, FileText, Folder, Grid, List } from "react-feather";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 
@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 // Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: "我的标注任务", href: "/dashboard/my-missions", icon: Folder },
+  { name: "我的发布", href: "/dashboard/my-publish", icon: FileText },
   {
     name: "发布任务",
     href: "/dashboard/publish",
