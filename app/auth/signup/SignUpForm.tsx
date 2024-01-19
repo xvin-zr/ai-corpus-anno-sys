@@ -66,7 +66,7 @@ function SignUpForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-10 rounded-md border-none bg-zinc-100 px-3 text-lg shadow ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-900"
+              className="h-10 rounded-md border-none bg-zinc-100 px-3 text-lg shadow ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
               placeholder="bupt@example.com"
               required
             />
@@ -83,7 +83,7 @@ function SignUpForm() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="h-10 rounded-md border-none bg-zinc-100 px-2 text-xl shadow ring-1 ring-inset ring-zinc-300 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-900"
+              className="h-10 rounded-md border-none bg-zinc-100 px-3 text-lg shadow ring-1 ring-inset ring-zinc-300 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
               min={2}
               required
             />
@@ -99,7 +99,7 @@ function SignUpForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-10 rounded-md border-none bg-zinc-100 px-2 text-xl shadow ring-1 ring-inset ring-zinc-300 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-900"
+              className="h-10 rounded-md border-none bg-zinc-100 px-3 text-xl shadow ring-1 ring-inset ring-zinc-300 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
               min={6}
               required
             />
@@ -115,7 +115,7 @@ function SignUpForm() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="h-10 rounded-md border-none bg-zinc-100 px-2 text-xl shadow ring-1 ring-inset ring-zinc-300 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-900"
+              className="h-10 rounded-md border-none bg-zinc-100 px-3 text-xl shadow ring-1 ring-inset ring-zinc-300 focus:ring-1 focus:ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
               min={6}
               required
             />
