@@ -4,6 +4,8 @@ import { User } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import ProfileBtn from "./ProfileBtn";
 
+export const dynamic = "force-dynamic";
+
 async function fetchBalance(): Promise<number> {
   const session = await getServerSession(authOptions);
   const user = session?.user;
@@ -12,6 +14,9 @@ async function fetchBalance(): Promise<number> {
     const { balance } = (await prisma.user.findUnique({
       where: {
         email: user.email,
+      },
+      select: {
+        balance: true,
       },
     })) as User;
     if (balance) return balance.toNumber();
@@ -94,5 +99,7 @@ async function ProfilePage() {
     </>
   );
 }
+
+export { fetchBalance };
 
 export default ProfilePage;
