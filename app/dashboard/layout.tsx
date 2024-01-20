@@ -8,7 +8,9 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       <SideNavContainer>
         <SideNav />
       </SideNavContainer>
-      <div className="flex-grow p-6 md:overflow-y-auto md:p-12">{children}</div>
+      <div className="flex-grow p-6 pb-0 md:overflow-y-auto md:p-12 md:pb-0">
+        {children}
+      </div>
     </div>
   );
 }
