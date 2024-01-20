@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import colors from "tailwindcss/colors";
+import colors, { green } from "tailwindcss/colors";
 
 const config: Config = {
   content: [
@@ -57,6 +57,7 @@ const config: Config = {
       zinc: colors.zinc,
       sky: colors.sky,
       black: colors.black,
+      green: colors.green,
     },
     extend: {
       fontFamily: {
