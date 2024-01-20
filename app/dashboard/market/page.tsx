@@ -1,20 +1,36 @@
-import React from "react";
-import { Search } from "react-feather";
 import { heading1Style } from "../components/header.style";
+import MissionList from "./MissionList";
+import SearchBar from "./SearchBar";
 
-function MarketPage() {
+export const revalidate = 0;
+
+function MarketPage({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  console.log("searchParams:\n", searchParams);
+  const query = searchParams?.query || "";
+  const currPage = Number(searchParams?.page) || 1;
+
   return (
     <>
       <h1 className={heading1Style}>任务市场</h1>
 
-      <div className="flex items-center justify-start space-x-2">
-        <Search className="inline-block" />
-        <input
-          type="search"
-          className="inline-block w-72 rounded px-2 py-1 text-lg shadow-sm ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
-        />
-      </div>
-      <div className="">MarketPage</div>
+      <section className="search-bar flex items-center justify-start space-x-2">
+        <SearchBar />
+      </section>
+
+      <section className="missions-section mt-8">
+        <MissionList query={query} currPage={currPage} />
+      </section>
+
+      <section className="pagination mt-4 flex items-center justify-center">
+        Pagination
+      </section>
     </>
   );
 }
