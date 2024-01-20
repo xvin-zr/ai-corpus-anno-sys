@@ -36,7 +36,7 @@ function SignUpForm() {
       return;
     } else {
       alert(`${data.msg}\n${data.name}\n${data.email}`);
-      router.push("/dashboard");
+      router.push("/dashboard/market");
     }
   }
 
@@ -123,7 +123,7 @@ function SignUpForm() {
         </Form.Field>
 
         <Form.Submit asChild>
-          <button className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow duration-200 hover:bg-v-success-dark ">
+          <button className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow duration-200 hover:bg-v-success-dark disabled:pointer-events-none">
             注册
           </button>
         </Form.Submit>

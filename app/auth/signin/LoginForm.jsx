@@ -17,7 +17,7 @@ function LoginForm() {
     e.preventDefault();
     console.log(email, password);
 
-    const callbackUrl = "/dashboard";
+    const callbackUrl = "/dashboard/market";
 
     try {
       setPending(true);
@@ -94,7 +94,7 @@ function LoginForm() {
 
         <Form.Submit asChild>
           <button
-            className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow transition-colors hover:bg-v-success-dark"
+            className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow transition-colors hover:bg-v-success-dark disabled:pointer-events-none"
             aria-disabled={pending}
           >
             登录{" "}
@@ -110,7 +110,7 @@ function LoginForm() {
         <hr className="grow" />
       </div>
       <button
-        onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+        onClick={() => signIn("github", { callbackUrl: "/dashboard/market" })}
         className="flex w-7/12 items-center justify-center gap-2 rounded-md bg-black  py-1.5 font-medium text-zinc-50  shadow transition-colors hover:bg-black/30"
       >
         <GitHub size={20} />
