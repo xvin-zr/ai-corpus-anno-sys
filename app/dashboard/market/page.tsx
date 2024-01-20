@@ -1,10 +1,11 @@
 import React from "react";
 import { Search } from "react-feather";
+import { heading1Style } from "../components/header.style";
 
 function MarketPage() {
   return (
     <>
-      <h1 className="mb-6 text-3xl font-bold">任务市场</h1>
+      <h1 className={heading1Style}>任务市场</h1>
 
       <div className="flex items-center justify-start space-x-2">
         <Search className="inline-block" />

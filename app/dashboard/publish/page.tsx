@@ -1,13 +1,14 @@
 import React from "react";
 import CldUploadBtn from "./CldUploadBtn";
 import PublishBtn from "./PublishBtn";
+import { heading1Style } from "../components/header.style";
 
 function PublishMissionPage() {
   const labelStyle = "block space-y-1";
   const labelSpanStyle = "block text-xl font-medium";
   return (
     <>
-      <h1 className="mb-6 text-3xl font-bold">发布任务</h1>
+      <h1 className={heading1Style}>发布任务</h1>
 
       <form className="group space-y-4" action="">
         <label className="block space-y-1">

@@ -3,6 +3,7 @@ import prisma from "@/prisma/client";
 import { User } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import ProfileBtn from "./ProfileBtn";
+import { heading1Style } from "../components/header.style";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +38,7 @@ async function ProfilePage() {
 
   return (
     <>
-      <h1 className="mb-6 text-3xl font-bold">个人资料</h1>
+      <h1 className={heading1Style}>个人资料</h1>
 
       <form className="flex flex-col gap-4">
         <label className={labelStyle}>
