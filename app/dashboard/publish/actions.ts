@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { getServerSession } from "next-auth";
 import { CldUploadWidgetInfo } from "next-cloudinary";
 import { z } from "zod";
-import { fetchBalance } from "../profile/page";
+import { fetchBalance } from "../profile/data";
 
 interface PublishState {
   success: boolean;

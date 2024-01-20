@@ -1,32 +1,10 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
-import prisma from "@/prisma/client";
-import { User } from "@prisma/client";
-import { getServerSession } from "next-auth";
 import ProfileBtn from "./ProfileBtn";
 import { heading1Style } from "../components/header.style";
+import { fetchBalance } from "./data";
 
 export const dynamic = "force-dynamic";
 
-async function fetchBalance(): Promise<number> {
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
-  if (!user?.email) return NaN;
-  try {
-    const { balance } = (await prisma.user.findUnique({
-      where: {
-        email: user.email,
-      },
-      select: {
-        balance: true,
-      },
-    })) as User;
-    if (balance) return balance.toNumber();
-    else return NaN;
-  } catch (error) {
-    console.error(error);
-    return NaN;
-  }
-}
+
 
 async function ProfilePage() {
   const inputStyle =
@@ -101,6 +79,5 @@ async function ProfilePage() {
   );
 }
 
-export { fetchBalance };
 
 export default ProfilePage;
