@@ -56,7 +56,7 @@ function PublishMissionPage() {
         <CldUploadBtn />
 
         <span
-          className="block text-base text-zinc-400"
+          className="block text-base opacity-60"
           style={{ marginTop: "1.2rem", marginBottom: "-0.3rem" }}
         >
           所需费用 = 报酬 + 图片数量
