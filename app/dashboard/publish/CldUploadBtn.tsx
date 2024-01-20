@@ -46,7 +46,7 @@ function CldUploadBtn() {
       >
         {({ open }) => (
           <button
-            className="inline-flex h-8 w-24 items-center justify-center rounded bg-v-success-dark px-4 py-3 text-zinc-50 shadow transition-colors hover:bg-v-success dark:bg-zinc-700 dark:hover:bg-zinc-800"
+            className="inline-flex h-8 w-24 items-center justify-center rounded bg-zinc-600 px-4 py-3 text-zinc-50 shadow transition-colors hover:bg-zinc-500 dark:bg-zinc-700 dark:hover:bg-zinc-800"
             onClick={(e) => {
               e.preventDefault();
               open();

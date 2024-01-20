@@ -17,11 +17,11 @@ function PublishMissionPage() {
             name="title"
             className="peer inline-block rounded px-2 py-1 shadow-sm  ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
             minLength={2}
-            maxLength={20}
+            maxLength={10}
             required
           />
           <span className="invisible ml-3 inline-block text-v-error-dark peer-invalid:peer-focus:visible dark:text-v-error-light">
-            主题长度为 2&ndash;20 个字符
+            主题长度为 2&ndash;10 个字符
           </span>
         </label>
 
@@ -53,6 +53,13 @@ function PublishMissionPage() {
         </label>
 
         <CldUploadBtn />
+
+        <span
+          className="block text-base text-zinc-400"
+          style={{ marginTop: "1.2rem", marginBottom: "-0.3rem" }}
+        >
+          所需费用 = 报酬 + 图片数量
+        </span>
 
         <PublishBtn />
       </form>

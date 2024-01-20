@@ -6,6 +6,7 @@ import Decimal from "decimal.js";
 import { getServerSession } from "next-auth";
 import { CldUploadWidgetInfo } from "next-cloudinary";
 import { z } from "zod";
+import { fetchBalance } from "../profile/page";
 
 interface PublishState {
   success: boolean;
@@ -25,8 +26,14 @@ export async function publishMission(
 
   const parsed = z
     .object({
-      title: z.string().min(2, "标题不能为空"),
-      reward: z.number().min(1, "报酬范围为 1-99"),
+      title: z
+        .string()
+        .min(2, "标题不能为空")
+        .max(10, "标题不能超过 10 个字符"),
+      reward: z
+        .number()
+        .min(1, "报酬范围为 1-999")
+        .max(999, "报酬范围为 1-999"),
       description: z.string(),
     })
     .safeParse({
@@ -43,6 +50,17 @@ export async function publishMission(
     if (!session) return { success: false, msg: "请先登录" };
     const email = session.user?.email as string;
     const contributor = session.user?.name as string;
+
+    const balance = await fetchBalance();
+    if (!balance) return { success: false, msg: "发布失败，未查询到余额" };
+    const fee = parsed.data.reward + imgs.length;
+    if (balance < fee) {
+      return {
+        success: false,
+        msg: `发布失败：当前余额为 ¥${balance}，发布需要 ¥${fee}`,
+      };
+    }
+
     const images = imgs.map((img) => {
       return {
         id: img.public_id,
@@ -53,13 +71,14 @@ export async function publishMission(
       };
     });
     console.log(images);
+
     const mission = await prisma.mission.create({
       data: {
         title: parsed.data.title,
         publisherEmail: email,
         reward: new Decimal(parsed.data.reward),
         description: parsed.data.description,
-        imagesId: images.map((img) => img.id),
+        imagesIds: images.map((img) => img.id),
         cocoAnnotation: {
           create: {
             info: {
@@ -75,12 +94,25 @@ export async function publishMission(
             },
           },
         },
+        images: {
+          connect: images.map((img) => ({ id: img.id })),
+        },
+      },
+    });
+    console.log(mission);
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        balance: {
+          decrement: fee,
+        },
       },
     });
 
-    console.log(mission);
-
-    if (!mission) {
+    if (!mission || !updatedUser) {
       return {
         success: false,
         msg: "发布失败",
