@@ -95,6 +95,7 @@ function LoginForm() {
         <Form.Submit asChild>
           <button
             className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow transition-colors hover:bg-v-success-dark disabled:pointer-events-none"
+            disabled={pending}
             aria-disabled={pending}
           >
             登录{" "}
