@@ -70,13 +70,13 @@ model Image {
   createdAt        DateTime        @default(now())
   Mission          Mission?        @relation(fields: [missionId], references: [id], onDelete: Cascade)
   missionId        String?
-  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id], onDelete: Cascade)
+  cocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id], onDelete: Cascade)
   cocoAnnotationId String?
 }
 
 model Mission {
   id             String          @id @default(cuid())
-  imagesId       String[]
+  imagesIds      String[]
   title          String
   cocoAnnotation CocoAnnotation?
   // cocoAnnotationId String
@@ -87,7 +87,7 @@ model Mission {
   comment        String?         @db.Text
   status         MissionStatus   @default(PENDING_ACCEPT)
   reward         Decimal?        @db.Money
-  Image          Image[]
+  images         Image[]
 }
 
 enum MissionStatus {
@@ -99,14 +99,15 @@ enum MissionStatus {
 }
 
 model CocoAnnotation {
-  id          String       @id @default(cuid())
-  info        Info?
-  licenses    License[]
-  images      Image[]
-  annotations Annotation[]
-  categories  Category[]
-  mission     Mission      @relation(fields: [missionId], references: [id], onDelete: Cascade)
-  missionId   String       @unique
+  id            String       @id @default(cuid())
+  info          Info?
+  licenses      License[]
+  images        Image[]
+  annotations   Annotation[]
+  // categories  Category[]
+  categoriesIds Int[]
+  mission       Mission      @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  missionId     String       @unique
 }
 
 model W3CAnnotation {
@@ -128,10 +129,10 @@ model Annotation {
   width            Float
   height           Float
   isCrowd          Boolean
-  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
+  cocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id], onDelete: Cascade)
   cocoAnnotationId String?
-  W3CAnnotation    W3CAnnotation?  @relation(fields: [w3CAnnotationId], references: [id])
-  w3CAnnotationId  String?
+  w3cAnnotation    W3CAnnotation?  @relation(fields: [w3cAnnotationId], references: [id], onDelete: Cascade)
+  w3cAnnotationId  String?
 }
 
 enum Segmentation {
@@ -161,18 +162,18 @@ model Info {
 }
 
 model Category {
-  id               Int             @id
-  name             String?
-  supercategory    String?
-  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
-  cocoAnnotationId String?
+  id            Int     @id
+  name          String?
+  supercategory String?
+  // CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
+  // cocoAnnotationId String?
 }
 
 model License {
   id               String          @id @default(cuid())
   name             String?
   url              String?
-  CocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id])
+  cocoAnnotation   CocoAnnotation? @relation(fields: [cocoAnnotationId], references: [id], onDelete: Cascade)
   cocoAnnotationId String?
 }
 
