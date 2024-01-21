@@ -2,8 +2,9 @@
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
+import { set } from "zod";
 
 const arrowStyle =
   "hover:text-blue-bupt dark:hover:text-v-success-light rounded-full p-1";
@@ -28,8 +29,13 @@ function Pagination({ totalPage }: { totalPage: number }) {
 
   function handlePageChange(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key != "Enter") return;
+    let pageNum = parseInt(e.currentTarget.value);
+    if (!pageNum) return;
+    else if (pageNum < 1) return;
+    else if (pageNum > totalPage) return;
+
     const params = new URLSearchParams(searchParams);
-    params.set("page", e.currentTarget.value);
+    params.set("page", pageNum.toString());
     replace(`${pathname}?${params.toString()}`);
     e.currentTarget.blur();
   }
@@ -47,9 +53,10 @@ function Pagination({ totalPage }: { totalPage: number }) {
 
       <input
         type="number"
-        className="h-8 w-10 rounded bg-zinc-100 px-1.5 dark:bg-zinc-800 text-center"
+        className="h-8 w-10 rounded bg-zinc-100 px-1.5 text-center dark:bg-zinc-800"
         min={1}
         max={totalPage}
+        step={1}
         defaultValue={currPage}
         onKeyUp={(e) => {
           handlePageChange(e);
