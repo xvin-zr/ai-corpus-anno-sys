@@ -4,6 +4,7 @@ import * as Form from "@radix-ui/react-form";
 import Link from "next/link";
 import { ArrowRightCircle } from "react-feather";
 import { useRouter } from "next/navigation";
+import { set } from "zod";
 
 function SignUpForm() {
   const router = useRouter();
@@ -11,6 +12,8 @@ function SignUpForm() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [pending, setPending] = useState(false);
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -18,25 +21,33 @@ function SignUpForm() {
       return;
     }
 
-    const res = await fetch("/api/user/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        name,
-        password,
-      }),
-    });
+    try {
+      setPending(true);
+      const res = await fetch("/api/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          name,
+          password,
+        }),
+      });
 
-    const data = await res.json();
-    if (data.error) {
-      alert(data.error);
-      return;
-    } else {
-      alert(`${data.msg}\n${data.name}\n${data.email}`);
-      router.push("/dashboard/market");
+      const data = await res.json();
+      setPending(false);
+      if (data.error) {
+        alert(data.error);
+        return;
+      } else {
+        alert(`${data.msg}\n${data.name}\n${data.email}`);
+        router.push("/dashboard/market");
+      }
+    } catch (err) {
+      setPending(false);
+      console.error(err);
+      alert("注册失败，请重试");
     }
   }
 
@@ -123,7 +134,10 @@ function SignUpForm() {
         </Form.Field>
 
         <Form.Submit asChild>
-          <button className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow duration-200 hover:bg-v-success-dark disabled:pointer-events-none">
+          <button
+            className="mt-5 flex w-auto items-center justify-center rounded-md bg-blue-bupt py-1.5 font-medium tracking-[4px] text-zinc-50 shadow duration-200 hover:bg-v-success-dark disabled:pointer-events-none"
+            disabled={pending}
+          >
             注册
           </button>
         </Form.Submit>
