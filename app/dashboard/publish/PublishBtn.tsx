@@ -5,10 +5,12 @@ import { imgCountAtom, uploadedImgsAtom } from "./CldUploadBtn";
 import { publishMission } from "./actions";
 import { useFormState, useFormStatus } from "react-dom";
 import { toastError, toastSuccess } from "../components/toast";
+import { useRouter } from "next/navigation";
 
 function PublishBtn() {
   const [imgCount] = useAtom(imgCountAtom);
   const uploadedImgs = useAtomValue(uploadedImgsAtom);
+  const { push } = useRouter();
 
   const publishMissionWithImgs = publishMission.bind(null, uploadedImgs);
   const [publishState, publishMissionAction] = useFormState(
@@ -25,10 +27,11 @@ function PublishBtn() {
     if (!publishState.msg) return;
     if (publishState.success) {
       toastSuccess(publishState.msg);
+      push("/dashboard/market");
     } else {
       toastError(publishState.msg);
     }
-  }, [publishState]);
+  }, [publishState, push]);
 
   return (
     <button
