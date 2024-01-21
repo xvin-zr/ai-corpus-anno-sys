@@ -10,6 +10,7 @@ function SearchBar() {
 
   const handleSearch = useDebouncedCallback((query: string): void => {
     const params = new URLSearchParams(searchParams);
+    params.set("page", "1");
     if (query) {
       params.set("query", query);
     } else {

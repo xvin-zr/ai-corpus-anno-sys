@@ -1,10 +1,9 @@
 import { heading1Style } from "../components/header.style";
 import MissionList from "./MissionList";
+import Pagination from "./Pagination";
 import SearchBar from "./SearchBar";
 
-export const revalidate = 0;
-
-function MarketPage({
+async function MarketPage({
   searchParams,
 }: {
   searchParams?: {
@@ -14,7 +13,9 @@ function MarketPage({
 }) {
   console.log("searchParams:\n", searchParams);
   const query = searchParams?.query || "";
-  const currPage = Number(searchParams?.page) || 1;
+  const currPage = parseInt(searchParams?.page || "1") || 1;
+
+  const totalPage = 3; // TODO await fetchMissionPages(query);
 
   return (
     <>
@@ -28,11 +29,22 @@ function MarketPage({
         <MissionList query={query} currPage={currPage} />
       </section>
 
-      <section className="pagination mt-4 flex items-center justify-center">
-        Pagination
+      <section
+        aria-label="pagination"
+        className="mt-4 flex w-full items-center justify-center gap-2 text-lg"
+      >
+        <Pagination totalPage={totalPage} />
       </section>
     </>
   );
 }
 
 export default MarketPage;
+
+async function fetchMissionPages(query: string): Promise<number> {
+  try {
+  } catch (err) {
+    console.error(err);
+  }
+  return NaN;
+}
