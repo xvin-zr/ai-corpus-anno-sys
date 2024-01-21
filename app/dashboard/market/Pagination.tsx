@@ -47,7 +47,7 @@ function Pagination({ totalPage }: { totalPage: number }) {
 
       <input
         type="number"
-        className="h-8 w-10 rounded bg-zinc-100 px-1.5 dark:bg-zinc-800"
+        className="h-8 w-10 rounded bg-zinc-100 px-1.5 dark:bg-zinc-800 text-center"
         min={1}
         max={totalPage}
         defaultValue={currPage}
