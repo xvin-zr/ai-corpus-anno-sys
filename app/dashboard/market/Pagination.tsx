@@ -2,9 +2,9 @@
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
-import { set } from "zod";
+import { z } from "zod";
 
 const arrowStyle =
   "hover:text-blue-bupt dark:hover:text-v-success-light rounded-full p-1";
@@ -29,10 +29,14 @@ function Pagination({ totalPage }: { totalPage: number }) {
 
   function handlePageChange(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key != "Enter") return;
-    let pageNum = parseInt(e.currentTarget.value);
-    if (!pageNum) return;
-    else if (pageNum < 1) return;
-    else if (pageNum > totalPage) return;
+    const pageNum = Number(e.currentTarget.value);
+    const pageParsed = z
+      .number()
+      .int()
+      .min(1)
+      .max(totalPage)
+      .safeParse(pageNum);
+    if (!pageParsed.success) return;
 
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNum.toString());
@@ -45,7 +49,7 @@ function Pagination({ totalPage }: { totalPage: number }) {
       <Link
         href={createPageUrl(currPage - 1)}
         className={clsx(arrowStyle, {
-          "pointer-events-none opacity-50": currPage == 1,
+          "pointer-events-none opacity-40": currPage == 1,
         })}
       >
         <ArrowLeft />
@@ -68,7 +72,7 @@ function Pagination({ totalPage }: { totalPage: number }) {
       <Link
         href={createPageUrl(currPage + 1)}
         className={clsx(arrowStyle, {
-          "pointer-events-none opacity-50": currPage == totalPage,
+          "pointer-events-none opacity-40": currPage == totalPage,
         })}
       >
         <ArrowRight />

@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+import { z } from "zod";
 import { heading1Style } from "../components/header.style";
 import MissionList from "./MissionList";
 import Pagination from "./Pagination";
@@ -13,9 +15,14 @@ async function MarketPage({
 }) {
   console.log("searchParams:\n", searchParams);
   const query = searchParams?.query || "";
-  const currPage = parseInt(searchParams?.page || "1") || 1;
+  const currPage = Number(searchParams?.page) || 1;
 
   const totalPage = 3; // TODO await fetchMissionPages(query);
+
+  const pageParsed = z.number().int().min(1).max(totalPage).safeParse(currPage);
+  if (!pageParsed.success) {
+    notFound();
+  }
 
   return (
     <>
