@@ -19,7 +19,7 @@ async function MissionDetailPage({
       <h1 className={`${heading1Style} -ml-6 flex items-center gap-1`}>
         <Link
           href={"/dashboard/market"}
-          className="inline-block hover:text-blue-bupt dark:hover:text-v-success-light"
+          className="inline-block hover:text-v-success dark:hover:text-v-success-light"
         >
           <ChevronLeft size={36} />
         </Link>
