@@ -33,8 +33,9 @@ async function MissionList({
               <Image
                 src={item.coverUrl}
                 fill
+                sizes="100%"
                 alt="mission cover"
-                quality={70}
+                quality={50}
                 priority
                 className="object-cover"
               ></Image>
