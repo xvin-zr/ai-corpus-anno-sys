@@ -101,16 +101,24 @@ async function MissionDetailPage({
         </div>
       </div>
 
-      <form className="mt-16 flex justify-center">
+      <form className="mt-16 flex flex-col items-center justify-center gap-4">
         <button
           className="flex h-10 items-center justify-center gap-1 rounded-md bg-blue-bupt px-6 text-base font-medium text-zinc-50 shadow transition-colors hover:bg-blue-bupt/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 group-invalid:pointer-events-none group-invalid:opacity-50 dark:bg-v-success-dark dark:hover:bg-v-success dark:focus-visible:ring-zinc-300"
           // disabled={pending}
+          disabled={userEmail == mission.publisherEmail}
           // aria-disabled={pending}
-          // formAction={publishMissionAction}
+          formAction={""}
         >
           接受任务
           {/* {<span className="loading loading-spinner loading-xs" />} */}
         </button>
+        <p
+          className={clsx("opacity-60", {
+            hidden: userEmail != mission.publisherEmail,
+          })}
+        >
+          无法接受自己发布的任务&nbsp;🤥
+        </p>
       </form>
     </>
   );
