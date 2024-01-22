@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight } from "react-feather";
 import { z } from "zod";
 
 const arrowStyle =
-  "hover:text-blue-bupt dark:hover:text-v-success-light rounded-full p-1";
+  "hover:text-v-success dark:hover:text-v-success-light rounded-full p-1";
 
 function Pagination({ totalPage }: { totalPage: number }) {
   const pathname = usePathname();
@@ -57,7 +57,7 @@ function Pagination({ totalPage }: { totalPage: number }) {
 
       <input
         type="number"
-        className="h-8 w-10 rounded bg-zinc-100 px-1.5 text-center dark:bg-zinc-800"
+        className="h-8 w-10 rounded bg-zinc-100 px-1.5 text-center ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
         min={1}
         max={totalPage}
         step={1}
