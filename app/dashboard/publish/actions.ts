@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { CldUploadWidgetInfo } from "next-cloudinary";
 import { z } from "zod";
 import { fetchBalance } from "../profile/data";
+import { revalidatePath } from "next/cache";
 
 interface PublishState {
   success: boolean;
@@ -118,6 +119,7 @@ export async function publishMission(
         msg: "发布失败",
       };
     } else {
+      revalidatePath("/dashboard/market");
       return {
         success: true,
         msg: "发布成功",
