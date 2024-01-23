@@ -1,8 +1,7 @@
 "use client";
 import clsx from "clsx";
-import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { z } from "zod";
 
@@ -13,7 +12,10 @@ function Pagination({ totalPage }: { totalPage: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { replace } = useRouter();
-  const currPage = parseInt(searchParams.get("page") || "1") || 1;
+  const [isFocus, setIsFocus] = useState(false);
+  const [currPage, setCurrPage] = useState(
+    parseInt(searchParams.get("page") || "1") || 1,
+  );
 
   function createPageUrl(pageNum: number): string {
     if (pageNum < 1) {
@@ -46,14 +48,18 @@ function Pagination({ totalPage }: { totalPage: number }) {
 
   return (
     <>
-      <Link
-        href={createPageUrl(currPage - 1)}
+      <button
+        onClick={() => {
+          if (currPage == 1) return;
+          replace(createPageUrl(currPage - 1));
+          setCurrPage(currPage - 1);
+        }}
         className={clsx(arrowStyle, {
-          "pointer-events-none opacity-40": currPage == 1,
+          "pointer-events-none opacity-40": currPage == 1 || isFocus,
         })}
       >
         <ArrowLeft />
-      </Link>
+      </button>
 
       <input
         type="number"
@@ -61,7 +67,18 @@ function Pagination({ totalPage }: { totalPage: number }) {
         min={1}
         max={totalPage}
         step={1}
-        defaultValue={currPage}
+        value={currPage}
+        onFocus={() => {
+          setIsFocus(true);
+        }}
+        onBlur={() => {
+          setIsFocus(false);
+        }}
+        onChange={(e) => {
+          const index = e.currentTarget.valueAsNumber;
+          if (index < 1 || index > totalPage) return;
+          setCurrPage(index);
+        }}
         onKeyUp={(e) => {
           handlePageChange(e);
         }}
@@ -69,14 +86,18 @@ function Pagination({ totalPage }: { totalPage: number }) {
       <span>/</span>
       <span>{totalPage}</span>
 
-      <Link
-        href={createPageUrl(currPage + 1)}
+      <button
+        onClick={() => {
+          if (currPage == totalPage) return;
+          replace(createPageUrl(currPage + 1));
+          setCurrPage(currPage + 1);
+        }}
         className={clsx(arrowStyle, {
-          "pointer-events-none opacity-40": currPage == totalPage,
+          "pointer-events-none opacity-40": currPage == totalPage || isFocus,
         })}
       >
         <ArrowRight />
-      </Link>
+      </button>
     </>
   );
 }

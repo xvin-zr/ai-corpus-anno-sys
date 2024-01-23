@@ -1,22 +1,21 @@
 import prisma from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-
-export const revalidate = 0;
-
-const PAGE_SIZE = 8;
+import { MISSION_PAGE_SIZE } from "./page";
 
 async function MissionList({
   query,
   currPage,
+  totalPage,
 }: {
   query: string;
   currPage: number;
+  totalPage: number;
 }) {
-  const missions = await fetchFilteredMissions(query, currPage);
-  const totalPage = Math.ceil(missions.length / PAGE_SIZE);
-  console.log(missions);
-  console.log(totalPage);
+  const missions = await fetchFilteredMissions(query, currPage, totalPage);
+  // const totalPage = Math.ceil(missions.length / MISSION_PAGE_SIZE);
+  // console.log(missions);
+  // console.log(totalPage);
 
   return (
     <ul className="grid grid-cols-4 grid-rows-2 gap-4">
@@ -73,9 +72,12 @@ interface MissionItem {
 async function fetchFilteredMissions(
   query: string,
   currPage: number,
+  totalPage: number,
 ): Promise<MissionItem[]> {
   try {
     const missions = await prisma.mission.findMany({
+      skip: (currPage - 1) * MISSION_PAGE_SIZE,
+      take: MISSION_PAGE_SIZE,
       where: {
         title: {
           contains: query,
