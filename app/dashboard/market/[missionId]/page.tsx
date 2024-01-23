@@ -6,9 +6,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "react-feather";
 import { heading1Style } from "../../components/header.style";
+import AcceptMissionBtn from "./AcceptMissionBtn";
 import Carousel from "./Carousel";
 
 const tdStyle = clsx("border border-zinc-300 p-3 dark:border-zinc-600");
+const trStyle = clsx("odd:dark:bg-zinc-800/50");
 
 async function MissionDetailPage({
   params: { missionId },
@@ -40,10 +42,10 @@ async function MissionDetailPage({
       </h1>
 
       <div className="flex w-full">
-        <div className="rounded-md border border-zinc-300 dark:border-zinc-600">
-          <table className="table-zebra max-w-md flex-none table-fixed border-collapse text-lg">
+        <div className="overflow-hidden rounded-md border border-zinc-300 dark:border-zinc-600">
+          <table className="max-w-md flex-none table-fixed border-collapse text-lg">
             <tbody className="">
-              <tr className="">
+              <tr className={trStyle}>
                 <td className={[tdStyle, "border-l-0 border-t-0"].join(" ")}>
                   任务标题
                 </td>
@@ -51,25 +53,25 @@ async function MissionDetailPage({
                   {mission.title}
                 </td>
               </tr>
-              <tr>
+              <tr className={trStyle}>
                 <td className={[tdStyle, "border-l-0"].join(" ")}>创建时间</td>
                 <td className={[tdStyle, "border-r-0"].join(" ")}>
                   {mission.createdAt.toLocaleDateString("zh")}
                 </td>
               </tr>
-              <tr>
+              <tr className={trStyle}>
                 <td className={tdStyle + " border-l-0"}>报酬</td>
                 <td className={[tdStyle, "border-r-0"].join(" ")}>
                   ¥&nbsp;{mission.reward?.toNumber()}
                 </td>
               </tr>
-              <tr>
+              <tr className={trStyle}>
                 <td className={tdStyle + " border-l-0"}>图片数量</td>
                 <td className={[tdStyle, "border-r-0"].join(" ")}>
                   {mission.images.length}
                 </td>
               </tr>
-              <tr>
+              <tr className={trStyle}>
                 <td className={[tdStyle, "border-b-0 border-l-0"].join(" ")}>
                   描述
                 </td>
@@ -102,23 +104,15 @@ async function MissionDetailPage({
       </div>
 
       <form className="mt-16 flex flex-col items-center justify-center gap-4">
-        <button
-          className="flex h-10 items-center justify-center gap-1 rounded-md bg-blue-bupt px-6 text-base font-medium text-zinc-50 shadow transition-colors hover:bg-blue-bupt/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 group-invalid:pointer-events-none group-invalid:opacity-50 dark:bg-v-success-dark dark:hover:bg-v-success dark:focus-visible:ring-zinc-300"
-          // disabled={pending}
-          disabled={userEmail == mission.publisherEmail}
-          // aria-disabled={pending}
-          formAction={""}
-        >
-          接受任务
-          {/* {<span className="loading loading-spinner loading-xs" />} */}
-        </button>
-        <p
-          className={clsx("opacity-60", {
-            hidden: userEmail != mission.publisherEmail,
-          })}
-        >
-          无法接受自己发布的任务&nbsp;🤥
-        </p>
+        <AcceptMissionBtn
+          userEmail={userEmail || ""}
+          publisherEmail={mission.publisherEmail}
+          missionId={missionId}
+        />
+
+        {userEmail == mission.publisherEmail && (
+          <p className={clsx("opacity-60")}>无法接受自己发布的任务&nbsp;🤥</p>
+        )}
       </form>
     </>
   );

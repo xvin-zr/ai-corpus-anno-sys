@@ -22,7 +22,12 @@ function Carousel({ imageUrls }: { imageUrls: string[] }) {
   return (
     <div className="flex h-full w-full items-center">
       <button
-        className="flex hover:text-v-success dark:hover:text-v-success-light"
+        className={clsx(
+          "flex hover:text-v-success dark:hover:text-v-success-light",
+          {
+            invisible: imageUrls.length <= 1,
+          },
+        )}
         onClick={prevSlide}
       >
         <ChevronLeft size={48} />
@@ -47,7 +52,12 @@ function Carousel({ imageUrls }: { imageUrls: string[] }) {
       </figure>
 
       <button
-        className="flex hover:text-v-success dark:hover:text-v-success-light"
+        className={clsx(
+          "flex hover:text-v-success dark:hover:text-v-success-light",
+          {
+            invisible: imageUrls.length <= 1,
+          },
+        )}
         onClick={nextSlide}
       >
         <ChevronRight size={48} />
