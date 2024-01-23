@@ -21,7 +21,9 @@ const uploadWidgetStyle = {
 };
 
 export const uploadedImgsAtom = atom<CldUploadWidgetInfo[]>([]);
-export const imgCountAtom = atom((get) => get(uploadedImgsAtom).length);
+export const imgCountAtom = atom(
+  (get) => get(uploadedImgsAtom).length,
+);
 
 function CldUploadBtn() {
   const [uploadedImgs, setUploadedImgs] = useAtom(uploadedImgsAtom);
