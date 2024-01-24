@@ -19,7 +19,7 @@ const links = [
     href: "/dashboard/market",
     icon: Grid,
   },
-  { name: "历史记录", href: "/dashboard/history", icon: List },
+  { name: "历史标注记录", href: "/dashboard/history", icon: List },
 ];
 
 export default function NavLinks() {
