@@ -5,10 +5,10 @@ import { heading1Style } from "../components/header.style";
 import MissionList from "./MissionList";
 import Pagination from "./Pagination";
 import SearchBar from "./SearchBar";
+import { MISSION_PAGE_SIZE } from "./data";
 
 export const dynamic = "force-dynamic";
 
-export const MISSION_PAGE_SIZE = 8;
 
 async function MarketPage({
   searchParams,

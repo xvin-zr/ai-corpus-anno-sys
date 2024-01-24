@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { MISSION_PAGE_SIZE } from "./page";
+import { MISSION_PAGE_SIZE } from "./data";
 
 async function MissionList({
   query,
