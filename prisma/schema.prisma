@@ -83,6 +83,7 @@ model Mission {
   publisherEmail String
   recipientEmail String?
   createdAt      DateTime        @default(now())
+  updatedAt      DateTime?       @updatedAt
   description    String?         @db.Text
   comment        String?         @db.Text
   status         MissionStatus   @default(PENDING_ACCEPT)
