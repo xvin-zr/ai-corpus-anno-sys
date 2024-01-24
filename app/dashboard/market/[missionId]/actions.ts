@@ -3,18 +3,13 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
 import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-interface AcceptMissionState {
+export async function acceptMissionAction(missionId: string): Promise<{
   success: boolean;
   msg: string;
-}
-
-export async function acceptMission(
-  missionId: string,
-  prevState: AcceptMissionState,
-  formData: FormData,
-): Promise<AcceptMissionState> {
+}> {
   const session = await getServerSession(authOptions);
   if (!session || !session.user || !session.user.email)
     redirect("/auth/signin");
@@ -29,7 +24,6 @@ export async function acceptMission(
         publisherEmail: true,
       },
     });
-    console.log(mission);
     if (!mission || !mission.publisherEmail) {
       return {
         success: false,
@@ -42,22 +36,28 @@ export async function acceptMission(
       };
     }
 
-    // const acceptedMission = await prisma.mission.update({
-    //   where: {
-    //     id: missionId,
-    //   },
-    //   data: {
-    //     status: "ONGOING",
-    //     recipientEmail: userEmail,
-    //   },
-    // });
-    // if (!acceptedMission) {
-    //   return {
-    //     success: false,
-    //     msg: "接受失败，请稍后再试",
-    //   };
-    // }
+    const acceptedMission = await prisma.mission.update({
+      where: {
+        id: missionId,
+        publisherEmail: {
+          not: userEmail,
+        },
+        recipientEmail: null,
+      },
+      data: {
+        status: "ONGOING",
+        recipientEmail: userEmail,
+      },
+    });
+    if (!acceptedMission) {
+      return {
+        success: false,
+        msg: "接受失败，请稍后再试",
+      };
+    }
 
+    revalidatePath("/dashboard/market");
+    revalidatePath("/dashboard/my-missions");
     return {
       success: true,
       msg: "接受成功",

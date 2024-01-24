@@ -9,8 +9,8 @@ import { heading1Style } from "../../components/header.style";
 import AcceptMissionBtn from "./AcceptMissionBtn";
 import Carousel from "./Carousel";
 
-const tdStyle = clsx("border border-zinc-300 p-3 dark:border-zinc-600");
-const trStyle = clsx("odd:dark:bg-zinc-800/50");
+export const tdStyle = clsx("border border-zinc-300 p-3 dark:border-zinc-600");
+export const trStyle = clsx("odd:bg-zinc-100 odd:dark:bg-zinc-800/50");
 
 async function MissionDetailPage({
   params: { missionId },
@@ -56,7 +56,11 @@ async function MissionDetailPage({
               <tr className={trStyle}>
                 <td className={[tdStyle, "border-l-0"].join(" ")}>创建时间</td>
                 <td className={[tdStyle, "border-r-0"].join(" ")}>
-                  {mission.createdAt.toLocaleDateString("zh")}
+                  {mission.createdAt.toLocaleDateString("zh", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })}
                 </td>
               </tr>
               <tr className={trStyle}>
@@ -103,7 +107,7 @@ async function MissionDetailPage({
         </div>
       </div>
 
-      <form className="mt-16 flex flex-col items-center justify-center gap-4">
+      <section className="mt-16 flex flex-col items-center justify-center gap-4">
         <AcceptMissionBtn
           userEmail={userEmail || ""}
           publisherEmail={mission.publisherEmail}
@@ -113,14 +117,14 @@ async function MissionDetailPage({
         {userEmail == mission.publisherEmail && (
           <p className={clsx("opacity-60")}>无法接受自己发布的任务&nbsp;🤥</p>
         )}
-      </form>
+      </section>
     </>
   );
 }
 
 export default MissionDetailPage;
 
-async function fetchMissionDetail(missionId: string) {
+export async function fetchMissionDetail(missionId: string) {
   try {
     const mission = await prisma.mission.findUnique({
       where: {
@@ -129,9 +133,12 @@ async function fetchMissionDetail(missionId: string) {
       select: {
         title: true,
         createdAt: true,
+        updatedAt: true,
         description: true,
+        comment: true,
         reward: true,
         publisherEmail: true,
+        status: true,
         images: {
           select: {
             url: true,
