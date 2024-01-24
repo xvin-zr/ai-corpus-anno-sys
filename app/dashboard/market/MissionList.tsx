@@ -48,7 +48,9 @@ async function MissionList({
                 </span>
 
                 <time className="ml-auto mr-3 opacity-60" dateTime="">
-                  {item.createdAt.toLocaleDateString("zh-CN")}
+                  {item.createdAt.toLocaleDateString("zh-CN", {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                  })}
                 </time>
               </span>
             </div>
