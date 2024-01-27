@@ -1,11 +1,10 @@
 "use client";
-import React, { useState } from "react";
 import * as Form from "@radix-ui/react-form";
-import Link from "next/link";
-import { ArrowRightCircle, GitHub } from "react-feather";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom";
+import { useState } from "react";
+import { ArrowRightCircle, GitHub } from "react-feather";
 
 function LoginForm() {
   const router = useRouter();
@@ -15,7 +14,6 @@ function LoginForm() {
 
   async function onSubmit(e) {
     e.preventDefault();
-    console.log(email, password);
 
     const callbackUrl = "/dashboard/market";
 
@@ -73,7 +71,6 @@ function LoginForm() {
               required
             />
           </Form.Control>
-          {/* <Form.ValidityState /> */}
         </Form.Field>
 
         <Form.Field className="flex flex-col gap-2" name="password">
