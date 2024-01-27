@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "react-feather";
 function Carousel({ imageUrls }: { imageUrls: string[] }) {
   const [currIndex, setCurrIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  console.log(currIndex);
 
   function prevSlide() {
     setIsLoading(true);

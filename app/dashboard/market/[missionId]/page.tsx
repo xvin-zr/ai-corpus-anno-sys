@@ -1,11 +1,11 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
-import prisma from "@/prisma/client";
 import clsx from "clsx";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "react-feather";
 import { heading1Style } from "../../components/header.style";
+import { fetchMissionDetail } from "../data";
 import AcceptMissionBtn from "./AcceptMissionBtn";
 import Carousel from "./Carousel";
 
@@ -100,9 +100,11 @@ async function MissionDetailPage({
           className="ml-auto w-[560px] py-4 pl-20"
         >
           <Carousel
-            imageUrls={mission.images.map(function getUrl(img) {
-              return img.url;
-            })}
+            imageUrls={mission.images
+              .map(function getUrl(img) {
+                return img.url;
+              })
+              .toSorted()}
           />
         </div>
       </div>
@@ -123,33 +125,3 @@ async function MissionDetailPage({
 }
 
 export default MissionDetailPage;
-
-export async function fetchMissionDetail(missionId: string) {
-  try {
-    const mission = await prisma.mission.findUnique({
-      where: {
-        id: missionId,
-      },
-      select: {
-        title: true,
-        createdAt: true,
-        updatedAt: true,
-        description: true,
-        comment: true,
-        reward: true,
-        publisherEmail: true,
-        status: true,
-        images: {
-          select: {
-            url: true,
-          },
-        },
-      },
-    });
-
-    return mission;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-}

@@ -1,14 +1,12 @@
-import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { heading1Style } from "../components/header.style";
 import MissionList from "./MissionList";
 import Pagination from "./Pagination";
 import SearchBar from "./SearchBar";
-import { MISSION_PAGE_SIZE } from "./data";
+import { fetchMissionPages } from "./data";
 
 export const dynamic = "force-dynamic";
-
 
 async function MarketPage({
   searchParams,
@@ -53,22 +51,3 @@ async function MarketPage({
 }
 
 export default MarketPage;
-
-async function fetchMissionPages(query: string): Promise<number> {
-  try {
-    const totalMissions = await prisma.mission.count({
-      where: {
-        title: {
-          contains: query,
-          mode: "insensitive",
-        },
-        status: "PENDING_ACCEPT",
-      },
-    });
-
-    return Math.ceil(totalMissions / MISSION_PAGE_SIZE);
-  } catch (err) {
-    console.error(err);
-    return NaN;
-  }
-}

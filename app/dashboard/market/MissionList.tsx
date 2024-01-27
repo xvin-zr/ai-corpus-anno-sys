@@ -49,7 +49,9 @@ async function MissionList({
 
                 <time className="ml-auto mr-3 opacity-60" dateTime="">
                   {item.createdAt.toLocaleDateString("zh-CN", {
-                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
                   })}
                 </time>
               </span>
@@ -110,7 +112,7 @@ async function fetchFilteredMissions(
         title: mission.title,
         createdAt: mission.createdAt,
         reward: mission.reward?.toNumber() ?? NaN,
-        coverUrl: mission.images[0].url,
+        coverUrl: mission.images.map((image) => image.url).toSorted()[0],
       };
     });
   } catch (err) {
