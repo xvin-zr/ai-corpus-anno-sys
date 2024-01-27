@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "react-feather";
 import { heading1Style } from "../../components/header.style";
 import Carousel from "../../market/[missionId]/Carousel";
-import { fetchMissionDetail } from "../../market/[missionId]/page";
+import { fetchMissionDetail } from "../../market/data";
 import DeleteMissionBtn from "./DeleteMissionBtn";
 import PublishedMissionDetailTable from "./PublishedMissionDetailTable";
 

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "react-feather";
 import { heading1Style } from "../../components/header.style";
 import Carousel from "../../market/[missionId]/Carousel";
-import { fetchMissionDetail } from "../../market/[missionId]/page";
+import { fetchMissionDetail } from "../../market/data";
 import AcceptedMissionDetailTable from "./AcceptedMissionDetailTable";
 import EnterAnnoBtn from "./EnterAnnoBtn";
 
