@@ -113,6 +113,7 @@ model CocoAnnotation {
 
 model W3CAnnotation {
   id             String       @id
+  imageId        String       @unique
   w3cAnnotations Json[]
   annotations    Annotation[]
 }
@@ -120,7 +121,7 @@ model W3CAnnotation {
 // 从 W3C 格式转化而来
 model Annotation {
   id               Int             @id @default(autoincrement())
-  imageId          Int
+  imageId          String
   categoryId       Int
   segmentation     Segmentation    @default(RLE)
   area             Float
