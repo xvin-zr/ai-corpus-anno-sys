@@ -22,7 +22,7 @@ function Annotator({
   const [anno, setAnno] = useAtom(annoAtom);
 
   useEffect(() => {
-    let annotorious = null;
+    let annotorious: Annotorious | null = null;
 
     if (imgElRef.current) {
       //  init
