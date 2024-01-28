@@ -1,5 +1,3 @@
-import React from "react";
-
 function AnnotationHeader({
   imageIndex,
   imagesCount,
@@ -9,10 +7,10 @@ function AnnotationHeader({
 }) {
   return (
     <header className="flex items-center justify-between text-lg">
-      <h1 className=" text-2xl font-semibold">标注系统</h1>
+      <h1 className=" text-2xl font-semibold">任务标注</h1>
       <div className="flex items-center gap-5 justify-self-center font-semibold">
         <progress
-          className="progress w-64 [&::-moz-progress-bar]:bg-v-success [&::-webkit-progress-value]:bg-v-success [&::-webkit-progress-value]:dark:bg-v-success"
+          className="progress w-96 [&::-moz-progress-bar]:bg-blue-bupt [&::-moz-progress-bar]:dark:bg-v-success [&::-webkit-progress-value]:bg-blue-bupt [&::-webkit-progress-value]:dark:bg-v-success"
           value={Number(imageIndex) + 1}
           max={imagesCount}
         ></progress>
