@@ -1,7 +1,9 @@
-import React from "react";
-import { fetchImageInfo, fetchImagesIds } from "./data";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
+import AnnoActions from "./AnnoActions";
 import AnnotationHeader from "./AnnotationHeader";
+import { fetchImageInfo, fetchImagesIds } from "./data";
+const Annotator = dynamic(() => import("./Annotator"), { ssr: false });
 
 async function ImageAnnotationPage({
   params: { imageIndex, missionId },
@@ -15,8 +17,9 @@ async function ImageAnnotationPage({
     notFound();
   }
   const imagesIds = await fetchImagesIds(missionId);
-  const image = await fetchImageInfo(imagesIds[Number(imageIndex)]);
-  console.log(image);
+  const { url, width, height } = await fetchImageInfo(
+    imagesIds[Number(imageIndex)],
+  );
   return (
     <>
       <AnnotationHeader
@@ -25,14 +28,18 @@ async function ImageAnnotationPage({
       />
 
       <section
-        className="mt-2 flex h-[544px] items-center justify-center"
+        className="mt-2 flex h-[544px] items-start justify-center overflow-auto rounded-lg"
         aria-label="annotation-section"
       >
-        123
+        <Annotator url={url} width={width} height={height} />
       </section>
 
       <section className="mt-4" aria-label="annotation-actions">
-        button
+        <AnnoActions
+          missionId={missionId}
+          imageIndex={parseInt(imageIndex)}
+          imagesCount={imagesIds.length}
+        />
       </section>
     </>
   );
