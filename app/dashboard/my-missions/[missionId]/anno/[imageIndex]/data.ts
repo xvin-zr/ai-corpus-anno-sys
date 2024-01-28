@@ -59,3 +59,18 @@ export async function fetchImageInfo(
     throw new Error("error in fetch image info");
   }
 }
+
+export interface W3CAnno {
+  id: string;
+  body: {
+    type: "TextualBody";
+    purpose: "tagging" | "commenting";
+    value: string;
+  }[];
+  target: {
+    selector: {
+      type: "FragmentSelector";
+      value: string;
+    };
+  };
+}
