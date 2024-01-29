@@ -1,11 +1,11 @@
 "use client";
-import { useAtom, useAtomValue } from "jotai";
-import React, { useEffect } from "react";
-import { imgCountAtom, uploadedImgsAtom } from "./CldUploadBtn";
-import { publishMission } from "./actions";
+import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { toastError, toastSuccess } from "../components/toast";
-import { useRouter } from "next/navigation";
+import { imgCountAtom, uploadedImgsAtom } from "./CldUploadBtn";
+import { publishMission } from "./actions";
 
 function PublishBtn() {
   const [imgCount] = useAtom(imgCountAtom);
@@ -24,7 +24,6 @@ function PublishBtn() {
   const { pending } = useFormStatus();
 
   useEffect(() => {
-    console.log("publishState\n", publishState);
     if (!publishState.msg) return;
     if (publishState.success) {
       toastSuccess(publishState.msg);
@@ -33,7 +32,7 @@ function PublishBtn() {
     } else {
       toastError(publishState.msg);
     }
-  }, [publishState, push, setUploadedImgs]);
+  }, [publishState]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <button
