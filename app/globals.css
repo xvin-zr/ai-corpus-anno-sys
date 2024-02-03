@@ -16,7 +16,7 @@
   }
 }
 
-html {
+/* html {
   font-family:
     var(--font-inter),
     var(--font-noto-sans-sc),
@@ -25,7 +25,7 @@ html {
     BlinkMacSystemFont,
     "Helvetica Neue",
     sans-serif;
-}
+} */
 
 body {
   color: rgb(var(--foreground-rgb));

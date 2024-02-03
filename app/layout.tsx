@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Sans_SC } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import AuthProvider from "./auth/Provider";
 import dynamic from "next/dynamic";
@@ -9,9 +9,12 @@ const Toaster = dynamic(() => import("./Toaster"), {
   ssr: false,
 });
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const notoSansSC = Noto_Sans_SC({
-  subsets: ["latin"],
+const inter = localFont({
+  src: "../public/typefaces/InterVariable.ttf",
+  variable: "--font-inter",
+});
+const notoSansSC = localFont({
+  src: "../public/typefaces/SourceHanSansSC-VF.otf",
   variable: "--font-noto-sans-sc",
 });
 
