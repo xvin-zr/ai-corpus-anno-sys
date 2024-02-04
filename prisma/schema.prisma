@@ -114,7 +114,7 @@ model CocoAnnotation {
 model W3CAnnotation {
   id             String       @id
   imageId        String       @unique
-  w3cAnnotations Json[]
+  w3cAnnotations Json?
   annotations    Annotation[]
 }
 
