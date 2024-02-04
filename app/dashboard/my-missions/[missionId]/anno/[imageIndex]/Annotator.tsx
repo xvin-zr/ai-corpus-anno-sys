@@ -2,6 +2,7 @@
 import "@/annotorious.min.css";
 import CocoNumbered from "@/constants/json/coco-numbered.json";
 import Image from "next/image";
+import { Prisma } from "@prisma/client";
 // @ts-ignore
 import { Annotorious } from "@recogito/annotorious";
 import { useAtom } from "jotai";
@@ -13,10 +14,12 @@ function Annotator({
   url,
   width,
   height,
+  w3cAnnos,
 }: {
   url: string;
   width: number;
   height: number;
+  w3cAnnos: Prisma.JsonArray;
 }) {
   const imgElRef = useRef(null);
   const [anno, setAnno] = useAtom(annoAtom);
@@ -47,6 +50,10 @@ function Annotator({
 
       annotorious.on("deleteAnnotation", (annotation: W3CAnno) => {
         console.log("deleted", annotation);
+      });
+
+      w3cAnnos.forEach((anno) => {
+        annotorious.addAnnotation(anno);
       });
     }
 

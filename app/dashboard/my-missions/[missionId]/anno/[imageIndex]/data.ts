@@ -1,5 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
 import prisma from "@/prisma/client";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { cache } from "react";
@@ -57,6 +58,26 @@ export async function fetchImageInfo(
   } catch (err) {
     console.error(err);
     throw new Error("error in fetch image info");
+  }
+}
+
+export async function fetchW3cAnnos(imageId: string) {
+  try {
+    const w3cAnnos = await prisma.w3CAnnotation.findUnique({
+      where: {
+        imageId: imageId,
+      },
+      select: {
+        w3cAnnotations: true,
+      },
+    });
+    if (!w3cAnnos) {
+      return [];
+    }
+    return w3cAnnos.w3cAnnotations as Prisma.JsonArray;
+  } catch (err) {
+    console.error(err);
+    throw new Error("error in fetch w3c annotations");
   }
 }
 
