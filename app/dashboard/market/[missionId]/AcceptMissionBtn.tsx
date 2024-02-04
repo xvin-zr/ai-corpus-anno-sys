@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { acceptMissionAction } from "./actions";
 import { toastError, toastSuccess } from "../../components/toast";
+import { acceptMissionAction } from "./actions";
 
 function AcceptMissionBtn({
   userEmail,
@@ -17,7 +17,6 @@ function AcceptMissionBtn({
   const [isPending, startAcceptMissionTransition] = useTransition();
 
   function handleAcceptMission() {
-    console.log("accept");
     startAcceptMissionTransition(async function acceptMission() {
       const acceptRes = await acceptMissionAction.bind(null, missionId)();
       if (acceptRes.success) {
