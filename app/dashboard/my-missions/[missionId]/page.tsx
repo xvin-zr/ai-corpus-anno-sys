@@ -23,7 +23,7 @@ async function MyAcceptedDetailPage({
     <>
       <h1 className={`${heading1Style} -ml-6 flex items-center gap-1`}>
         <Link
-          href={"/dashboard/market"}
+          href={"/dashboard/my-missions"}
           className="inline-block hover:text-v-success dark:hover:text-v-success-light"
         >
           <ArrowLeft size={38} />
@@ -58,7 +58,10 @@ async function MyAcceptedDetailPage({
         aria-label="buttons"
         className="mt-16 flex items-center justify-center"
       >
-        <EnterAnnoBtn missionId={missionId} />
+        {(mission.status === "ONGOING" ||
+          mission.status === "PENDING_IMPROVE") && (
+          <EnterAnnoBtn missionId={missionId} />
+        )}
       </section>
     </>
   );
