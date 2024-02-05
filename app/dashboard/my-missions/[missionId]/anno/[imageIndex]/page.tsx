@@ -18,17 +18,22 @@ async function ImageAnnotationPage({
     notFound();
   }
   const imagesIds = await fetchImagesIds(missionId);
+  if (Number(imageIndex) < 0 || Number(imageIndex) >= imagesIds.length) {
+    notFound();
+  }
+
   const { url, width, height } = await fetchImageInfo(
     imagesIds[Number(imageIndex)],
   );
   const w3cAnnos = await fetchW3cAnnos(imagesIds[parseInt(imageIndex)]);
-  console.log(w3cAnnos);
 
   return (
     <>
       <AnnotationHeader
         imageIndex={parseInt(imageIndex)}
         imagesCount={imagesIds.length}
+        imageId={imagesIds[parseInt(imageIndex)]}
+        missionId={missionId}
       />
 
       <section

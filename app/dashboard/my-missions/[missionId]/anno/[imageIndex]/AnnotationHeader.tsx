@@ -3,9 +3,13 @@ import CompleteAnnoBtn from "./CompleteAnnoBtn";
 function AnnotationHeader({
   imageIndex,
   imagesCount,
+  imageId,
+  missionId,
 }: {
   imageIndex: number;
   imagesCount: number;
+  imageId: string;
+  missionId: string;
 }) {
   return (
     <header className="flex items-center justify-between text-lg">
@@ -19,7 +23,12 @@ function AnnotationHeader({
         {Number(imageIndex) + 1}&nbsp;/&nbsp;{imagesCount}
       </div>
 
-      <CompleteAnnoBtn imageIndex={imageIndex} imagesCount={imagesCount} />
+      <CompleteAnnoBtn
+        imageIndex={imageIndex}
+        imagesCount={imagesCount}
+        imageId={imageId}
+        missionId={missionId}
+      />
     </header>
   );
 }
