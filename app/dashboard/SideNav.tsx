@@ -13,7 +13,7 @@ export default async function SideNav() {
         className="mb-6 flex h-5 items-center justify-start rounded-md bg-blue-bupt p-4 dark:bg-v-success-dark md:h-16"
         href="/"
       >
-        <div className="flex w-32 items-center justify-center gap-1 text-xl font-semibold tracking-wider text-zinc-50 md:w-40">
+        <div className="flex w-32 items-center justify-center gap-1 text-xl font-bold tracking-wider text-zinc-50 md:w-40">
           语料标注 <PenTool />
         </div>
       </Link>

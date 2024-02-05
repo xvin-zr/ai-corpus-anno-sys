@@ -78,7 +78,7 @@ async function MyPublishPage() {
                     <td className="p-4">
                       <Link
                         href={`/dashboard/my-publish/${mission.id}`}
-                        className="rounded-md px-2 py-1 text-base hover:bg-zinc-200/70 dark:hover:bg-zinc-600/60"
+                        className="rounded-md px-2 py-1 text-base font-[475] hover:bg-zinc-200/70 dark:hover:bg-zinc-600/60"
                       >
                         详情
                       </Link>

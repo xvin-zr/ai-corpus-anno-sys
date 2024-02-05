@@ -6,6 +6,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import StatusBadge from "../components/StatusBadge";
 import { heading1Style } from "../components/header.style";
+import { ArrowRightCircle } from "react-feather";
 
 async function MyAcceptedMissionsPage() {
   const acceptedMissions = await fetchAcceptedMissions();
@@ -82,9 +83,9 @@ async function MyAcceptedMissionsPage() {
                     <td className="p-4">
                       <Link
                         href={`/dashboard/my-missions/${mission.id}`}
-                        className="rounded-md px-2 py-1 text-base hover:bg-zinc-200/70 dark:hover:bg-zinc-600/60"
+                        className="inline-flex items-center justify-center gap-1 rounded-md px-2 py-1 text-base font-medium hover:bg-zinc-200/70 dark:hover:bg-zinc-600/60"
                       >
-                        进入任务
+                        进入任务 <ArrowRightCircle size={18} />
                       </Link>
                     </td>
                   </tr>

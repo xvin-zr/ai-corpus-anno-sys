@@ -12,10 +12,12 @@ const Toaster = dynamic(() => import("./Toaster"), {
 const inter = localFont({
   src: "../public/typefaces/InterVariable.ttf",
   variable: "--font-inter",
+  weight: "400 700",
 });
 const notoSansSC = localFont({
   src: "../public/typefaces/SourceHanSansSC-VF.otf",
   variable: "--font-noto-sans-sc",
+  weight: "400 700",
 });
 
 export const metadata: Metadata = {
