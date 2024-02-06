@@ -38,7 +38,7 @@ async function ImageAnnotationPage({
 
       <section
         className={clsx(
-          "mt-2 flex h-[544px] items-start justify-center overflow-auto rounded-lg",
+          "mt-6 flex h-[544px] items-start justify-center overflow-auto rounded-lg",
         )}
         aria-label="annotation-section"
       >

@@ -4,6 +4,7 @@ import { atom, useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
+import CategoryPicker from "./CategoryPicker";
 import { uploadW3cAnnoAction } from "./actions";
 
 export const annoAtom = atom(null);
@@ -46,6 +47,8 @@ function AnnoActions({
         <ArrowLeft />
         上一个
       </button>
+
+      <CategoryPicker />
 
       <button
         className={clsx(
