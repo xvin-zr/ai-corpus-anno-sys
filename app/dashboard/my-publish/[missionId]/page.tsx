@@ -8,6 +8,7 @@ import Carousel from "../../market/[missionId]/Carousel";
 import { fetchMissionDetail } from "../../market/data";
 import DeleteMissionBtn from "./DeleteMissionBtn";
 import PublishedMissionDetailTable from "./PublishedMissionDetailTable";
+import ReviewMissionBtn from "./ReviewMissionBtn";
 
 async function MyPublishedDetailPage({
   params: { missionId },
@@ -67,9 +68,13 @@ async function MyPublishedDetailPage({
         {mission.status == "PENDING_ACCEPT" && (
           <DeleteMissionBtn missionId={missionId} />
         )}
-        {/* <CompleteMissionBtn />
+        {/* <CompleteMissionBtn /> */}
 
-        <ReviewMissionBtn /> */}
+        {mission.status == "PENDING_REVIEW" && (
+          <ReviewMissionBtn missionId={missionId} />
+        )}
+
+        {mission.status == "COMPLETED" && <Link href={`#`}>下载标注语料</Link>}
       </section>
     </>
   );
