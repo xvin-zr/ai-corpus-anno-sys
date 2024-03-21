@@ -2,6 +2,7 @@
 import prisma from "@/prisma/client";
 import { Prisma } from "@prisma/client";
 import { W3CAnno } from "./data";
+import { revalidatePath } from "next/cache";
 
 export async function uploadW3cAnnoAction(
   w3cAnnos: W3CAnno[],
@@ -53,6 +54,8 @@ export async function completeMissionAction(
     if (!updatedMission) {
       throw new Error("mission not found");
     }
+    revalidatePath(`/dashboard/my-missions/${missionId}`);
+    revalidatePath(`/dashboard/my-missions`);
     return true;
   } catch (err) {
     console.error(err);
