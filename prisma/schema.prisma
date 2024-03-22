@@ -75,20 +75,23 @@ model Image {
 }
 
 model Mission {
-  id             String          @id @default(cuid())
-  imagesIds      String[]
-  title          String
-  cocoAnnotation CocoAnnotation?
+  id                   String          @id @default(cuid())
+  imagesIds            String[]
+  title                String
+  cocoAnnotation       CocoAnnotation?
   // cocoAnnotationId String
-  publisherEmail String
-  recipientEmail String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime?       @updatedAt
-  description    String?         @db.Text
-  comment        String?         @db.Text
-  status         MissionStatus   @default(PENDING_ACCEPT)
-  reward         Decimal?        @db.Money
-  images         Image[]
+  publisherEmail       String
+  recipientEmail       String?
+  multiRecipientEmails String[]
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime?       @updatedAt
+  description          String?         @db.Text
+  comment              String?         @db.Text
+  reviewBySystem       Boolean         @default(true)
+  status               MissionStatus   @default(PENDING_ACCEPT)
+  reward               Decimal?        @db.Money
+  insFilePath          String?
+  images               Image[]
 }
 
 enum MissionStatus {
@@ -112,10 +115,11 @@ model CocoAnnotation {
 }
 
 model W3CAnnotation {
-  id             String       @id
-  imageId        String       @unique
-  w3cAnnotations Json?
-  annotations    Annotation[]
+  id                 String       @id
+  imageId            String       @unique
+  defaultAnnotations Json?
+  w3cAnnotations     Json?
+  annotations        Annotation[]
 }
 
 // 从 W3C 格式转化而来
