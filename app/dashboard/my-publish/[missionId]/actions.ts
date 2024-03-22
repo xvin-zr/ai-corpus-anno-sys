@@ -3,6 +3,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
 import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
 
 export async function deleteMissionAction(
   missionId: string,
@@ -39,12 +40,14 @@ export async function deleteMissionAction(
     }
 
     // TODO: 删除任务逻辑
-    // const deletedMission = await prisma.mission.delete({
-    //   where: {
-    //     id: missionId,
-    //     publisherEmail: userEmail,
-    //   },
-    // });
+    const deletedMission = await prisma.mission.delete({
+      where: {
+        id: missionId,
+        publisherEmail: userEmail,
+      },
+    });
+
+    revalidatePath("/dashboard/my-publish");
 
     return {
       success: true,

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 function DeleteMissionBtn({ missionId }: { missionId: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startDeleteMissionTransition] = useTransition();
-  const { push } = useRouter();
+  const { replace } = useRouter();
 
   function closeModal() {
     setIsOpen(false);
@@ -29,6 +29,7 @@ function DeleteMissionBtn({ missionId }: { missionId: string }) {
       } else {
         toastError("删除任务失败");
       }
+      replace("/dashboard/my-publish");
     });
   }
 
