@@ -6,6 +6,11 @@ import Carousel from "../../market/[missionId]/Carousel";
 import { fetchMissionDetail } from "../../market/data";
 import AcceptedMissionDetailTable from "./AcceptedMissionDetailTable";
 import EnterAnnoBtn from "./EnterAnnoBtn";
+import { readFile } from "fs/promises";
+import dynamic from "next/dynamic";
+const DownloadInsFileBtn = dynamic(() => import("./DownloadInsFileBtn"), {
+  ssr: false,
+});
 
 async function MyAcceptedDetailPage({
   params: { missionId },
@@ -18,6 +23,14 @@ async function MyAcceptedDetailPage({
   if (!mission) {
     notFound();
   }
+
+  var fileBuffer;
+  if (mission.insFileName) {
+    fileBuffer = await readFile(`app/api/insFiles/${mission.insFileName}`);
+  }
+
+  // const fileBuffer = await readFile(mission.insFilePath as PathLike);
+  // console.log(fileBuffer);
 
   return (
     <>
@@ -56,8 +69,14 @@ async function MyAcceptedDetailPage({
 
       <section
         aria-label="buttons"
-        className="mt-16 flex items-center justify-center"
+        className="mt-16 flex items-center justify-center space-x-4"
       >
+        {mission.insFileName && fileBuffer && (
+          <DownloadInsFileBtn
+            fileBufferJson={fileBuffer.toJSON()}
+            filename={mission.insFileName.split("/").pop() ?? "instructions"}
+          />
+        )}
         {(mission.status === "ONGOING" ||
           mission.status === "PENDING_IMPROVE") && (
           <EnterAnnoBtn missionId={missionId} />

@@ -62,3 +62,37 @@ export async function completeMissionAction(
     throw new Error("error in complete mission");
   }
 }
+
+async function reviewAnnotations(missionId: string) {
+  try {
+    const { imagesIds } =
+      (await prisma.mission.findUnique({
+        where: {
+          id: missionId,
+        },
+        select: {
+          imagesIds: true,
+        },
+      })) ?? {};
+
+    if (!imagesIds) {
+      throw new Error("images not found");
+    }
+
+    const w3cAnnos = await prisma.w3CAnnotation.findMany({
+      where: {
+        imageId: {
+          in: imagesIds,
+        },
+      },
+      select: {
+        w3cAnnotations: true,
+        defaultAnnotations: true,
+      },
+    });
+    // TODO：对比 w3cAnnos 和 defaultAnnotations，生成 review 结果
+  } catch (err) {
+    console.error(err);
+    throw new Error("error in review annotations");
+  }
+}
