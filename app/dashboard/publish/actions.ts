@@ -1,16 +1,17 @@
 "use server";
 
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
+import { Box } from "@/constants/json";
 import prisma from "@/prisma/client";
 import axios from "axios";
 import Decimal from "decimal.js";
+import { writeFile } from "fs/promises";
 import { getServerSession } from "next-auth";
 import { CldUploadWidgetInfo } from "next-cloudinary";
 import { revalidatePath } from "next/cache";
+import path from "path";
 import { z } from "zod";
 import { fetchBalance } from "../profile/data";
-import { writeFile } from "fs/promises";
-import path from "path";
 
 interface PublishState {
   success: boolean;
@@ -34,7 +35,7 @@ export async function publishMission(
 
   console.log(title, reward, description);
   console.log(reviewType, insFile);
-  console.log(process.cwd());
+  console.log(specifiedEmail);
 
   const parsed = z
     .object({
@@ -66,8 +67,6 @@ export async function publishMission(
       };
     }
   }
-
-  // return { success: false, msg: "test" };
 
   try {
     const session = await getServerSession(authOptions);
@@ -104,7 +103,12 @@ export async function publishMission(
       }
     }
 
-    const odRes = (
+    // 获得预标注结果
+    const odRes: {
+      url: string;
+      id: string;
+      res: { score: number; label: string; box: Box }[];
+    }[] = (
       await axios.post(OD_SERVER, {
         images: imgs.map((img) => {
           return {
@@ -117,8 +121,10 @@ export async function publishMission(
 
     console.log(JSON.stringify(odRes, null, 2));
 
+    var insFileName: string | undefined;
     if (insFile instanceof File && insFile.size > 0) {
       const insFileBuffer = Buffer.from(await insFile.arrayBuffer());
+      insFileName = insFile.name;
       await writeFile(
         path.join(process.cwd(), `app/api/insFiles/${insFile.name}`),
         insFileBuffer,
@@ -136,12 +142,17 @@ export async function publishMission(
     });
     console.log(images);
 
+    // 创建任务
     const mission = await prisma.mission.create({
       data: {
         title: parsed.data.title,
         publisherEmail: email,
+        recipientEmail: specifiedEmail ? String(specifiedEmail) : null,
         reward: new Decimal(parsed.data.reward),
         description: parsed.data.description,
+        insFileName: insFileName ?? null,
+        reviewBySystem: String(reviewType) === "system",
+        status: specifiedEmail ? "ONGOING" : "PENDING_ACCEPT",
         imagesIds: images.map((img) => img.id),
         cocoAnnotation: {
           create: {
@@ -165,6 +176,19 @@ export async function publishMission(
     });
     console.log(mission);
 
+    // 创建预标注
+    const anno = await prisma.w3CAnnotation.createMany({
+      data: odRes.map(function (res) {
+        return {
+          id: res.id,
+          imageId: res.id,
+          defaultAnnotations: res.res,
+        };
+      }),
+      skipDuplicates: true,
+    });
+
+    // 更新用户余额
     const updatedUser = await prisma.user.update({
       where: {
         email,
@@ -176,7 +200,7 @@ export async function publishMission(
       },
     });
 
-    if (!mission || !updatedUser) {
+    if (!mission || !updatedUser || !anno) {
       return {
         success: false,
         msg: "发布失败",
