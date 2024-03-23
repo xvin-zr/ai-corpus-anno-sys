@@ -36,6 +36,8 @@ export async function fetchMissionDetail(missionId: string) {
         reward: true,
         publisherEmail: true,
         status: true,
+        insFileName: true,
+        multiRecipientEmails: true,
         images: {
           select: {
             url: true,

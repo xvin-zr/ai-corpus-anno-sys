@@ -1,3 +1,4 @@
+import { MAX_ALLOWED_RECIPIENTS } from "@/constants/json";
 import prisma from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -94,6 +95,8 @@ async function fetchFilteredMissions(
         title: true,
         createdAt: true,
         reward: true,
+        recipientEmail: true,
+        multiRecipientEmails: true,
         images: {
           select: {
             url: true,
@@ -106,15 +109,22 @@ async function fetchFilteredMissions(
       },
     });
 
-    return missions.map(function getItem(mission) {
-      return {
-        id: mission.id,
-        title: mission.title,
-        createdAt: mission.createdAt,
-        reward: mission.reward?.toNumber() ?? NaN,
-        coverUrl: mission.images.map((image) => image.url).toSorted()[0],
-      };
-    });
+    return missions
+      .filter(function (mission) {
+        return (
+          mission.recipientEmail === null &&
+          mission.multiRecipientEmails.length < MAX_ALLOWED_RECIPIENTS
+        );
+      })
+      .map(function getItem(mission) {
+        return {
+          id: mission.id,
+          title: mission.title,
+          createdAt: mission.createdAt,
+          reward: mission.reward?.toNumber() ?? NaN,
+          coverUrl: mission.images.map((image) => image.url).toSorted()[0],
+        };
+      });
   } catch (err) {
     console.error(err);
     return [];
