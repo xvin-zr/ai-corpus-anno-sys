@@ -90,7 +90,7 @@ model Mission {
   reviewBySystem       Boolean         @default(true)
   status               MissionStatus   @default(PENDING_ACCEPT)
   reward               Decimal?        @db.Money
-  insFilePath          String?
+  insFileName          String?
   images               Image[]
 }
 
