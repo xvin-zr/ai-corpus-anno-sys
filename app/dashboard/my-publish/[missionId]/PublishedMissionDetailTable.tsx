@@ -1,3 +1,4 @@
+import { MAX_ALLOWED_RECIPIENTS } from "@/constants/json";
 import { MissionStatus } from "@prisma/client";
 import Decimal from "decimal.js";
 import StatusBadge from "../../components/StatusBadge";
@@ -10,6 +11,7 @@ function PublishedMissionDetailTable({
   imagesLen,
   status,
   description,
+  multiRecipientEmails,
 }: {
   title: string;
   createdAt: Date;
@@ -17,6 +19,7 @@ function PublishedMissionDetailTable({
   imagesLen: number;
   status: MissionStatus;
   description: string;
+  multiRecipientEmails: string[];
 }) {
   return (
     <div className="overflow-hidden rounded-md border border-zinc-300 dark:border-zinc-600">
@@ -56,6 +59,14 @@ function PublishedMissionDetailTable({
               <StatusBadge status={status} />
             </td>
           </tr>
+          {multiRecipientEmails.length > 0 && (
+            <tr className={trStyle}>
+              <td className={tdStyle + " border-l-0"}>完成人数</td>
+              <td className={[tdStyle, "border-r-0"].join(" ")}>
+                {multiRecipientEmails.length / MAX_ALLOWED_RECIPIENTS}
+              </td>
+            </tr>
+          )}
           <tr className={trStyle}>
             <td className={[tdStyle, "border-b-0 border-l-0"].join(" ")}>
               描述

@@ -46,6 +46,7 @@ async function MyPublishedDetailPage({
           imagesLen={mission.images.length}
           status={mission.status}
           description={mission.description || ""}
+          multiRecipientEmails={mission.multiRecipientEmails}
         />
 
         <div
