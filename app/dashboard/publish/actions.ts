@@ -101,6 +101,15 @@ export async function publishMission(
           msg: "指定的标注人员不存在",
         };
       }
+
+      // 更新标注人员的任务状态
+      // const updatedUserMission = await prisma.userMission.create({
+      //   data: {
+      //     userEmail: specifiedEmail,
+      //     missionId: "",
+      //   },
+      // });
+      // })
     }
 
     // 获得预标注结果
@@ -118,8 +127,6 @@ export async function publishMission(
         }),
       })
     )?.data?.results;
-
-    console.log(JSON.stringify(odRes, null, 2));
 
     var insFileName: string | undefined;
     if (insFile instanceof File && insFile.size > 0) {
@@ -175,6 +182,21 @@ export async function publishMission(
       },
     });
     console.log(mission);
+
+    if (
+      reviewType === "human" &&
+      typeof specifiedEmail == "string" &&
+      specifiedEmail
+    ) {
+      // 更新标注人员的任务状态
+      const updatedUserMission = await prisma.userMission.create({
+        data: {
+          email: specifiedEmail,
+          missionId: mission.id,
+          status: "ONGOING",
+        },
+      });
+    }
 
     // 创建预标注
     const anno = await prisma.w3CAnnotation.createMany({
