@@ -128,11 +128,21 @@ model CocoAnnotation {
 }
 
 model W3CAnnotation {
-  id                 String       @id
-  imageId            String       @unique
+  id                 String           @id
+  imageId            String           @unique
   defaultAnnotations Json?
-  w3cAnnotations     Json?
+  userAnnotations    UserAnnotation[]
   annotations        Annotation[]
+}
+
+model UserAnnotation {
+  imageId         String
+  email           String
+  w3cAnnotations  Json?
+  W3CAnnotation   W3CAnnotation? @relation(fields: [w3CAnnotationId], references: [imageId])
+  w3CAnnotationId String?
+
+  @@id([imageId, email])
 }
 
 // 从 W3C 格式转化而来
