@@ -52,11 +52,13 @@ export async function acceptMissionAction(missionId: string): Promise<{
       },
       data: mission.reviewBySystem
         ? {
+            status: "ONGOING",
             multiRecipientEmails: {
               push: userEmail,
             },
           }
         : {
+            status: "ONGOING",
             recipientEmail: userEmail,
           },
     });
