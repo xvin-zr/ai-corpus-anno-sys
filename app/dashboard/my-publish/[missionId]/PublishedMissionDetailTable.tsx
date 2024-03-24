@@ -1,4 +1,4 @@
-import { MAX_ALLOWED_RECIPIENTS } from "@/constants/json";
+import { MAX_ALLOWED_RECIPIENTS } from "@/constants";
 import { MissionStatus } from "@prisma/client";
 import Decimal from "decimal.js";
 import StatusBadge from "../../components/StatusBadge";

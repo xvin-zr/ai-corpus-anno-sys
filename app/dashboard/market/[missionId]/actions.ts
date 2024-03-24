@@ -22,6 +22,7 @@ export async function acceptMissionAction(missionId: string): Promise<{
       },
       select: {
         publisherEmail: true,
+        reviewBySystem: true,
       },
     });
     if (!mission || !mission.publisherEmail) {
@@ -36,20 +37,38 @@ export async function acceptMissionAction(missionId: string): Promise<{
       };
     }
 
-    const acceptedMission = await prisma.mission.update({
+    const updatedMission = await prisma.mission.update({
       where: {
         id: missionId,
         publisherEmail: {
           not: userEmail,
         },
         recipientEmail: null,
+        NOT: {
+          multiRecipientEmails: {
+            has: userEmail,
+          },
+        },
       },
+      data: mission.reviewBySystem
+        ? {
+            multiRecipientEmails: {
+              push: userEmail,
+            },
+          }
+        : {
+            recipientEmail: userEmail,
+          },
+    });
+
+    const createdUserMission = await prisma.userMission.create({
       data: {
+        missionId: missionId,
+        email: userEmail,
         status: "ONGOING",
-        recipientEmail: userEmail,
       },
     });
-    if (!acceptedMission) {
+    if (!updatedMission || !createdUserMission) {
       return {
         success: false,
         msg: "接受失败，请稍后再试",
