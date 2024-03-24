@@ -96,6 +96,7 @@ model Mission {
   publisherEmail       String
   recipientEmail       String?
   multiRecipientEmails String[]        @default(["_"])
+  recipientsCnt        Int             @default(0)
   createdAt            DateTime        @default(now())
   updatedAt            DateTime?       @updatedAt
   description          String?         @db.Text
@@ -112,6 +113,8 @@ enum MissionStatus {
   ONGOING
   PENDING_REVIEW
   PENDING_IMPROVE
+  PASSED
+  REJECTED
   COMPLETED
 }
 
