@@ -2,7 +2,9 @@ import React from "react";
 import { MissionStatus } from "@prisma/client";
 import clsx from "clsx";
 
-function StatusBadge({ status }: { status: MissionStatus }) {
+function StatusBadge({ status }: { status: MissionStatus | null }) {
+  if (!status) return null;
+
   const badgeStyle = clsx(
     "inline-flex items-center rounded-full px-2.5 py-1 text-base font-medium",
     {

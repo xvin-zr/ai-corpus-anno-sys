@@ -113,7 +113,7 @@ interface AcceptedMission {
   title: string;
   imagesIds: string[];
   updatedAt: Date | null;
-  status: MissionStatus;
+  status: MissionStatus | null;
 }
 
 async function fetchAcceptedMissions(): Promise<AcceptedMission[]> {
@@ -124,19 +124,37 @@ async function fetchAcceptedMissions(): Promise<AcceptedMission[]> {
   }
 
   try {
+    const userMissions = await prisma.userMission.findMany({
+      where: {
+        email: userEmail,
+      },
+      select: {
+        missionId: true,
+        status: true,
+      },
+    });
     const acceptedMissions = await prisma.mission.findMany({
       where: {
-        recipientEmail: userEmail,
+        id: {
+          in: userMissions.map((um) => um.missionId),
+        },
       },
       select: {
         id: true,
         title: true,
         imagesIds: true,
-        status: true,
+        // status: true,
         updatedAt: true,
       },
     });
-    return acceptedMissions;
+
+    return acceptedMissions.map(function addStatus(mission) {
+      return {
+        ...mission,
+        status:
+          userMissions.find((um) => um.missionId == mission.id)?.status ?? null,
+      };
+    });
   } catch (err) {
     console.error(err);
     return [];
