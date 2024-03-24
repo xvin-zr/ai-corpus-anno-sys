@@ -1,7 +1,7 @@
 "use server";
 
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
-import { Box } from "@/constants/json";
+import { Box } from "@/constants";
 import prisma from "@/prisma/client";
 import axios from "axios";
 import Decimal from "decimal.js";
