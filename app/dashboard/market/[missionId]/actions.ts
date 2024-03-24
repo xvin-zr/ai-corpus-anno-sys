@@ -56,6 +56,9 @@ export async function acceptMissionAction(missionId: string): Promise<{
             multiRecipientEmails: {
               push: userEmail,
             },
+            recipientsCnt: {
+              increment: 1,
+            },
           }
         : {
             status: "ONGOING",
