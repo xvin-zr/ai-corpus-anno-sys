@@ -3,6 +3,7 @@ import prisma from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { MISSION_PAGE_SIZE } from "./data";
+import { getCurrUserEmail } from "@/app/data";
 
 async function MissionList({
   query,
@@ -80,6 +81,9 @@ async function fetchFilteredMissions(
   totalPage: number,
 ): Promise<MissionItem[]> {
   try {
+    const userEmail = await getCurrUserEmail();
+    if (!userEmail) return [];
+
     const missions = await prisma.mission.findMany({
       skip: (currPage - 1) * MISSION_PAGE_SIZE,
       take: MISSION_PAGE_SIZE,
@@ -89,6 +93,16 @@ async function fetchFilteredMissions(
           mode: "insensitive",
         },
         status: "PENDING_ACCEPT",
+
+        publisherEmail: {
+          not: userEmail,
+        },
+        recipientEmail: null,
+        NOT: {
+          multiRecipientEmails: {
+            has: userEmail,
+          },
+        },
       },
       select: {
         id: true,
@@ -109,22 +123,15 @@ async function fetchFilteredMissions(
       },
     });
 
-    return missions
-      .filter(function (mission) {
-        return (
-          mission.recipientEmail === null &&
-          mission.multiRecipientEmails.length < MAX_ALLOWED_RECIPIENTS
-        );
-      })
-      .map(function getItem(mission) {
-        return {
-          id: mission.id,
-          title: mission.title,
-          createdAt: mission.createdAt,
-          reward: mission.reward?.toNumber() ?? NaN,
-          coverUrl: mission.images.map((image) => image.url).toSorted()[0],
-        };
-      });
+    return missions.map(function getItem(mission) {
+      return {
+        id: mission.id,
+        title: mission.title,
+        createdAt: mission.createdAt,
+        reward: mission.reward?.toNumber() ?? NaN,
+        coverUrl: mission.images.map((image) => image.url).toSorted()[0],
+      };
+    });
   } catch (err) {
     console.error(err);
     return [];

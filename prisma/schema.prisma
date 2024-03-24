@@ -46,17 +46,30 @@ model VerificationToken {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String?   @unique
-  hashedPassword String?
-  balance        Decimal   @default(0) @db.Money
-  createdAt      DateTime  @default(now())
-  isAdmin        Boolean   @default(false)
-  emailVerified  DateTime?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
+  id               String        @id @default(cuid())
+  name             String?
+  email            String?       @unique
+  passedMissionCnt Int           @default(0)
+  totalMissionCnt  Int           @default(0)
+  accuracy         Float         @default(0.6)
+  hashedPassword   String?
+  balance          Decimal       @default(0) @db.Money
+  createdAt        DateTime      @default(now())
+  isAdmin          Boolean       @default(false)
+  emailVerified    DateTime?
+  image            String?
+  userMissions     UserMission[]
+  accounts         Account[]
+  sessions         Session[]
+}
+
+model UserMission {
+  missionId String
+  email     String
+  status    MissionStatus
+  User      User?         @relation(fields: [email], references: [email])
+
+  @@id([missionId, email])
 }
 
 model Image {
@@ -82,7 +95,7 @@ model Mission {
   // cocoAnnotationId String
   publisherEmail       String
   recipientEmail       String?
-  multiRecipientEmails String[]
+  multiRecipientEmails String[]        @default(["_"])
   createdAt            DateTime        @default(now())
   updatedAt            DateTime?       @updatedAt
   description          String?         @db.Text
