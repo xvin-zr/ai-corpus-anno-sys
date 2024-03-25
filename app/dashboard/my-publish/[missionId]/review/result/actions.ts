@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/prisma/client";
+import { revalidatePath } from "next/cache";
 
 export async function passReviewAction(missionId: string): Promise<{
   success: boolean;
@@ -17,7 +18,19 @@ export async function passReviewAction(missionId: string): Promise<{
       },
     });
 
-    if (!updatedMission) {
+    const updatedUserMission = await prisma.userMission.update({
+      where: {
+        missionId_email: {
+          missionId: missionId,
+          email: updatedMission?.recipientEmail ?? "",
+        },
+      },
+      data: {
+        status: "COMPLETED",
+      },
+    });
+
+    if (!updatedMission || !updatedUserMission) {
       return {
         success: false,
         msg: "通过审核出错，请稍后再试",
@@ -43,7 +56,8 @@ export async function passReviewAction(missionId: string): Promise<{
         msg: "通过审核出错，请稍后再试",
       };
     }
-
+    revalidatePath(`/dashboard/my-publish/${missionId}`);
+    revalidatePath(`/dashboard/my-publish`);
     return {
       success: true,
       msg: "通过审核成功",
@@ -69,13 +83,27 @@ export async function addImproveCommentAction(
       },
     });
 
-    if (!updatedMission) {
+    const updatedUserMission = await prisma.userMission.update({
+      where: {
+        missionId_email: {
+          missionId: missionId,
+          email: updatedMission?.recipientEmail ?? "",
+        },
+      },
+      data: {
+        status: "PENDING_IMPROVE",
+      },
+    });
+
+    if (!updatedMission || !updatedUserMission) {
       return {
         success: false,
         msg: "发布失败，请稍后再试",
       };
     }
 
+    revalidatePath(`/dashboard/my-publish/${missionId}`);
+    revalidatePath(`/dashboard/my-publish`);
     return {
       success: true,
       msg: "发布成功，过段时间再来审核吧",

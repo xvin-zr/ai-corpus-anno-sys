@@ -4,7 +4,7 @@ import {
 } from "@/app/dashboard/my-missions/[missionId]/anno/[imageIndex]/data";
 import { notFound } from "next/navigation";
 import React from "react";
-import { fetchImagesIds } from "./data";
+import { fetchImagesIds, fetchReviewAnnos } from "./data";
 import ReviewHeader from "./ReviewHeader";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
@@ -31,7 +31,10 @@ async function ImageReviewPage({
   const { url, width, height } = await fetchImageInfo(
     imagesIds[Number(imageIndex)],
   );
-  const w3cAnnos = await fetchW3cAnnos(imagesIds[parseInt(imageIndex)]);
+  const w3cAnnos = await fetchReviewAnnos(
+    missionId,
+    imagesIds[parseInt(imageIndex)],
+  );
 
   return (
     <>
