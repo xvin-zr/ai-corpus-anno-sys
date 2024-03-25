@@ -66,8 +66,17 @@ export async function acceptMissionAction(missionId: string): Promise<{
           },
     });
 
-    const createdUserMission = await prisma.userMission.create({
-      data: {
+    const createdUserMission = await prisma.userMission.upsert({
+      where: {
+        missionId_email: {
+          missionId: missionId,
+          email: userEmail,
+        },
+      },
+      update: {
+        status: "ONGOING",
+      },
+      create: {
         missionId: missionId,
         email: userEmail,
         status: "ONGOING",
