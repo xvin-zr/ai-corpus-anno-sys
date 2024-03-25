@@ -3,22 +3,34 @@ import prisma from "@/prisma/client";
 import { Prisma } from "@prisma/client";
 import { W3CAnno } from "./data";
 import { revalidatePath } from "next/cache";
+import { getCurrUserEmail } from "@/app/data";
+import { redirect } from "next/navigation";
 
 export async function uploadW3cAnnoAction(
   w3cAnnos: W3CAnno[],
   imageId: string,
 ) {
   try {
-    const uploadedAnnos = await prisma.w3CAnnotation.upsert({
+    const userEmail = await getCurrUserEmail();
+    if (!userEmail) {
+      redirect("/auth/signin");
+      return;
+    }
+
+    const uploadedAnnos = await prisma.userAnnotation.upsert({
       where: {
-        imageId: imageId,
+        imageId_email: {
+          imageId: imageId,
+          email: userEmail,
+        },
       },
       update: {
         w3cAnnotations: w3cAnnos as unknown as Prisma.JsonArray,
       },
       create: {
-        id: imageId,
         imageId: imageId,
+        email: userEmail,
+        w3CAnnotationId: imageId,
         w3cAnnotations: w3cAnnos as unknown as Prisma.JsonArray,
       },
     });
@@ -35,17 +47,21 @@ export async function completeMissionAction(
   missionId: string,
 ): Promise<boolean> {
   try {
+    const userEmail = await getCurrUserEmail();
     await uploadW3cAnnoAction(w3cAnnos, imageId);
-    await prisma.w3CAnnotation.deleteMany({
+    await prisma.userAnnotation.deleteMany({
       where: {
         w3cAnnotations: {
           equals: [],
         },
       },
     });
-    const updatedMission = await prisma.mission.update({
+    const updatedMission = await prisma.userMission.update({
       where: {
-        id: missionId,
+        missionId_email: {
+          missionId: missionId,
+          email: userEmail,
+        },
       },
       data: {
         status: "PENDING_REVIEW",
@@ -53,6 +69,30 @@ export async function completeMissionAction(
     });
     if (!updatedMission) {
       throw new Error("mission not found");
+    }
+
+    const { reviewBySystem = true } =
+      (await prisma.mission.findUnique({
+        where: {
+          id: missionId,
+        },
+        select: {
+          reviewBySystem: true,
+        },
+      })) ?? {};
+
+    if (reviewBySystem) {
+      // TODO: 系统自动审核
+    } else {
+      // 除了用户的任务状态外，更新任务状态
+      await prisma.mission.update({
+        where: {
+          id: missionId,
+        },
+        data: {
+          status: "PENDING_REVIEW",
+        },
+      });
     }
     revalidatePath(`/dashboard/my-missions/${missionId}`);
     revalidatePath(`/dashboard/my-missions`);
@@ -86,8 +126,13 @@ async function reviewAnnotations(missionId: string) {
         },
       },
       select: {
-        w3cAnnotations: true,
+        imageId: true,
         defaultAnnotations: true,
+        userAnnotations: {
+          select: {
+            w3cAnnotations: true,
+          },
+        },
       },
     });
     // TODO：对比 w3cAnnos 和 defaultAnnotations，生成 review 结果

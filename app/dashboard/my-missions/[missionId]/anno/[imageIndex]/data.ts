@@ -1,4 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
+import { getCurrUserEmail } from "@/app/data";
 import prisma from "@/prisma/client";
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
@@ -19,7 +20,10 @@ export const fetchImagesIds = cache(async function fetchImagesIds(
       await prisma.mission.findUnique({
         where: {
           id: missionId,
-          recipientEmail: userEmail,
+          OR: [
+            { recipientEmail: userEmail },
+            { multiRecipientEmails: { has: userEmail } },
+          ],
         },
         select: {
           imagesIds: true,
@@ -63,9 +67,14 @@ export async function fetchImageInfo(
 
 export async function fetchW3cAnnos(imageId: string) {
   try {
-    const w3cAnnos = await prisma.w3CAnnotation.findUnique({
+    const userEmail = await getCurrUserEmail();
+
+    const w3cAnnos = await prisma.userAnnotation.findUnique({
       where: {
-        imageId: imageId,
+        imageId_email: {
+          email: userEmail,
+          imageId: imageId,
+        },
       },
       select: {
         w3cAnnotations: true,
