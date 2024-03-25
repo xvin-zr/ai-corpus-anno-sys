@@ -17,7 +17,7 @@ function AcceptedMissionDetailTable({
   updatedAt: Date;
   reward: Decimal | null;
   imagesLen: number;
-  status: MissionStatus;
+  status: MissionStatus | null;
   description: string;
   comment: string;
 }) {

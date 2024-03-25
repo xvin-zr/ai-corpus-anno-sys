@@ -8,6 +8,7 @@ import AcceptedMissionDetailTable from "./AcceptedMissionDetailTable";
 import EnterAnnoBtn from "./EnterAnnoBtn";
 import { readFile } from "fs/promises";
 import dynamic from "next/dynamic";
+import { fetchUserMissionStatus } from "./data";
 const DownloadInsFileBtn = dynamic(() => import("./DownloadInsFileBtn"), {
   ssr: false,
 });
@@ -23,6 +24,7 @@ async function MyAcceptedDetailPage({
   if (!mission) {
     notFound();
   }
+  const missionStatus = await fetchUserMissionStatus(missionId);
 
   var fileBuffer;
   if (mission.insFileName) {
@@ -50,7 +52,7 @@ async function MyAcceptedDetailPage({
           updatedAt={mission.updatedAt || new Date()}
           reward={mission.reward}
           imagesLen={mission.images.length}
-          status={mission.status}
+          status={missionStatus}
           description={mission.description || ""}
           comment={mission.comment || ""}
         />
@@ -77,8 +79,8 @@ async function MyAcceptedDetailPage({
             filename={mission.insFileName.split("/").pop() ?? "instructions"}
           />
         )}
-        {(mission.status === "ONGOING" ||
-          mission.status === "PENDING_IMPROVE") && (
+        {(missionStatus === "ONGOING" ||
+          missionStatus === "PENDING_IMPROVE") && (
           <EnterAnnoBtn missionId={missionId} />
         )}
       </section>
