@@ -61,11 +61,16 @@ export async function reviewAnnos(
         reviewRes = false;
         continue;
       }
-      maxBIoUAnno?.group.push({
-        score: accuracy,
-        bIoU: maxBIoU,
-        box: userAnno.box,
-      });
+
+      // 判断标注是否已经存在
+      const isExisted = maxBIoUAnno?.group.some((anno) => anno.bIoU == maxBIoU);
+      if (maxBIoUAnno && !isExisted) {
+        maxBIoUAnno.group.push({
+          score: accuracy,
+          bIoU: maxBIoU,
+          box: userAnno.box,
+        });
+      }
     }
   }
 
