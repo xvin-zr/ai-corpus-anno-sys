@@ -158,7 +158,7 @@ export async function publishMission(
         reward: new Decimal(parsed.data.reward),
         description: parsed.data.description,
         insFileName: insFileName ?? null,
-        reviewBySystem: String(reviewType) === "system",
+        reviewBySystem: String(reviewType) === "system" && odRes.length > 0,
         status: specifiedEmail ? "ONGOING" : "PENDING_ACCEPT",
         imagesIds: images.map((img) => img.id),
         cocoAnnotation: {
