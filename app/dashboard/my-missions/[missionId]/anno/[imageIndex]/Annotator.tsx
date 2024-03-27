@@ -63,8 +63,17 @@ function Annotator({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div>
-      <Image src={url} width={width} height={height} alt={url} ref={imgElRef} />
+    <div className={``}>
+      <Image
+        src={url}
+        width={width}
+        height={height}
+        alt={url}
+        ref={imgElRef}
+        quality={100}
+        priority
+        // style={{ maxWidth: width, maxHeight: height }}
+      />
     </div>
   );
 }

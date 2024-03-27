@@ -14,12 +14,15 @@ function AnnoActions({
   imageIndex,
   imageId,
   imagesCount,
+  defaultAnnosCnt,
 }: {
   missionId: string;
   imageIndex: number;
   imageId: string;
   imagesCount: number;
+  defaultAnnosCnt: number;
 }) {
+  console.log("defaultAnnosCnt", defaultAnnosCnt);
   const { push } = useRouter();
   const [anno, setAnno] = useAtom(annoAtom);
   const [isPending, startPageChangeTransition] = useTransition();
@@ -47,6 +50,8 @@ function AnnoActions({
         <ArrowLeft />
         上一个
       </button>
+
+      <span className="text-lg">建议最低标注数量：{defaultAnnosCnt}</span>
 
       <CategoryPicker />
 

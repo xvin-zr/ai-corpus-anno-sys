@@ -3,7 +3,12 @@ import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import AnnoActions from "./AnnoActions";
 import AnnotationHeader from "./AnnotationHeader";
-import { fetchImageInfo, fetchImagesIds, fetchW3cAnnos } from "./data";
+import {
+  fetchDefaultAnnosLen,
+  fetchImageInfo,
+  fetchImagesIds,
+  fetchW3cAnnos,
+} from "./data";
 const Annotator = dynamic(() => import("./Annotator"), { ssr: false });
 
 async function ImageAnnotationPage({
@@ -26,6 +31,9 @@ async function ImageAnnotationPage({
     imagesIds[Number(imageIndex)],
   );
   const w3cAnnos = await fetchW3cAnnos(imagesIds[parseInt(imageIndex)]);
+  const defaultAnnosCnt = await fetchDefaultAnnosLen(
+    imagesIds[parseInt(imageIndex)],
+  );
 
   return (
     <>
@@ -38,7 +46,8 @@ async function ImageAnnotationPage({
 
       <section
         className={clsx(
-          "mt-6 flex h-[544px] items-start justify-start overflow-auto rounded-lg",
+          `mt-6 flex h-[544px] items-start overflow-auto rounded-lg`,
+          { "justify-center": width < 1400, "justify-start": width >= 1400 },
         )}
         aria-label="annotation-section"
       >
@@ -56,6 +65,7 @@ async function ImageAnnotationPage({
           imageIndex={parseInt(imageIndex)}
           imageId={imagesIds[parseInt(imageIndex)]}
           imagesCount={imagesIds.length}
+          defaultAnnosCnt={defaultAnnosCnt}
         />
       </section>
     </>

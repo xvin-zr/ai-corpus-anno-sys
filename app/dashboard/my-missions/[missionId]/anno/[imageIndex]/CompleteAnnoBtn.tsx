@@ -25,7 +25,11 @@ function CompleteAnnoBtn({
   function handleCompleteMission() {
     startCompleteMissionTransition(async function completeMission() {
       const w3cAnnos = (anno as any)?.getAnnotations();
-      const success = await completeMissionAction(w3cAnnos, imageId, missionId);
+      const success = await completeMissionAction(
+        w3cAnnos,
+        imageId,
+        missionId,
+      );
       if (success) replace(`/dashboard/my-missions/${missionId}`);
       else {
         toastError("标注提交失败，请稍后再试");

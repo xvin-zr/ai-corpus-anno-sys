@@ -1,3 +1,4 @@
+import { DefaultAnno } from "@/algo/BIoU";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
 import { getCurrUserEmail } from "@/app/data";
 import prisma from "@/prisma/client";
@@ -103,4 +104,35 @@ export interface W3CAnno {
       value: string;
     };
   };
+}
+
+export async function fetchDefaultAnnosLen(imageId: string) {
+  try {
+    const { defaultAnnotations = [] } =
+      (await prisma.w3CAnnotation.findUnique({
+        where: {
+          imageId: imageId,
+        },
+        select: {
+          defaultAnnotations: true,
+        },
+      })) ?? {};
+    return Math.max((defaultAnnotations as DefaultAnno[]).length - 1, 1);
+  } catch (err) {
+    console.error(err);
+    throw new Error("error in fetch default annotations");
+  }
+}
+
+function w3cAnnoToBox(w3cAnnos: W3CAnno[]) {
+  return w3cAnnos.map(function (anno) {
+    const { x, y, width, height } = JSON.parse(anno.target.selector.value);
+    return {
+      x,
+      y,
+      width,
+      height,
+      id: anno.id,
+    };
+  });
 }

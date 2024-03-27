@@ -1,8 +1,7 @@
 "use client";
+import { SuperCategory } from "@/constants";
 import CocoCategory from "@/constants/json/coco-categories.json";
 import { useState } from "react";
-
-type SuperCategory = keyof typeof CocoCategory;
 
 const superCategory = Object.keys(CocoCategory) as SuperCategory[];
 
