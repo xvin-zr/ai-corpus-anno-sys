@@ -49,8 +49,8 @@ model User {
   id               String        @id @default(cuid())
   name             String?
   email            String?       @unique
-  passedMissionCnt Int           @default(0)
-  totalMissionCnt  Int           @default(0)
+  passedMissionCnt Int           @default(6)
+  totalMissionCnt  Int           @default(10)
   accuracy         Float         @default(0.6)
   hashedPassword   String?
   balance          Decimal       @default(0) @db.Money
@@ -97,6 +97,8 @@ model Mission {
   recipientEmail       String?
   multiRecipientEmails String[]        @default(["_"])
   recipientsCnt        Int             @default(0)
+  passedCnt            Int             @default(0)
+  rejectedCnt          Int             @default(0)
   createdAt            DateTime        @default(now())
   updatedAt            DateTime?       @updatedAt
   description          String?         @db.Text
@@ -142,7 +144,10 @@ model UserAnnotation {
   imageId         String
   email           String
   w3cAnnotations  Json?
-  W3CAnnotation   W3CAnnotation? @relation(fields: [w3CAnnotationId], references: [imageId])
+  bIoU            Float?
+  reviewPassed    Boolean?
+  score           Float
+  w3CAnnotation   W3CAnnotation? @relation(fields: [w3CAnnotationId], references: [imageId])
   w3CAnnotationId String?
 
   @@id([imageId, email])
