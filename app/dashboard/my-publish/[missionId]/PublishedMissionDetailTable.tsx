@@ -59,11 +59,11 @@ function PublishedMissionDetailTable({
               <StatusBadge status={status} />
             </td>
           </tr>
-          {multiRecipientEmails.length > 0 && (
+          {multiRecipientEmails.length > 1 && (
             <tr className={trStyle}>
               <td className={tdStyle + " border-l-0"}>接受人数</td>
               <td className={[tdStyle, "border-r-0"].join(" ")}>
-                {multiRecipientEmails.length} / {MAX_ALLOWED_RECIPIENTS}
+                {multiRecipientEmails.length - 1} / {MAX_ALLOWED_RECIPIENTS}
               </td>
             </tr>
           )}
