@@ -40,7 +40,7 @@ export type DefaultAnno = {
   score: number;
   box: Box;
   group: {
-    label?: string;
+    label: string;
     score: number;
     box: Box;
     bIoU: number;
