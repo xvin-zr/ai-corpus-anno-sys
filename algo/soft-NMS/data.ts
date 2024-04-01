@@ -12,7 +12,7 @@ export async function fetchDefaultAnnos(imageId: string) {
       },
     })) ?? { defaultAnnotations: [] }) as { defaultAnnotations: DefaultAnno[] };
 
-    return defaultAnnotations;
+    return { imageId, defaultAnnotations };
   } catch (err) {
     console.error(err);
     throw new Error("fetch default annos failed in soft NMS");

@@ -2,16 +2,24 @@ import { Box } from "@/constants";
 import { calcBIoU, DefaultAnno } from "../BIoU";
 import { fetchDefaultAnnos } from "./data";
 
-const NMS_THRESH = 0.1;
+const NMS_THRESH = 0.2;
 const SIGMA = 0.5;
 
 export function softNMS(defaultAnnos: DefaultAnno) {
-  const sortedAnnos = defaultAnnos.group.toSorted((a, b) => b.score - a.score);
+  const sortedAnnos = defaultAnnos.group
+    .map(function calcScore(anno) {
+      return {
+        ...anno,
+        score: 0.6 * anno.bIoU + 0.4 * anno.score,
+      };
+    })
+    .toSorted((a, b) => b.score - a.score);
 
   const res: {
     score: number;
     box: Box;
     bIoU: number;
+    label: string;
   }[] = [];
   const suppressed: boolean[] = new Array(sortedAnnos.length).fill(false);
 
