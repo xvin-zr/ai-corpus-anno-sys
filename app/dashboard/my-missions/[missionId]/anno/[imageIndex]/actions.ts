@@ -173,6 +173,17 @@ export async function completeMissionAction(
         // 任务被拒绝两次，自动升级任务
         await upgradeMission(missionId);
       }
+      if (updatedMission.passedCnt >= 2) {
+        // 任务被通过两次，任务更新为已完成，可下载结果
+        await prisma.mission.update({
+          where: {
+            id: missionId,
+          },
+          data: {
+            status: "COMPLETED",
+          },
+        });
+      }
 
       // 更新用户任务状态
       await prisma.userMission.update({
