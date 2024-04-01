@@ -38,6 +38,7 @@ export async function fetchMissionDetail(missionId: string) {
         status: true,
         insFileName: true,
         multiRecipientEmails: true,
+        passedCnt: true,
         images: {
           select: {
             url: true,
