@@ -9,6 +9,11 @@ import { fetchMissionDetail } from "../../market/data";
 import DeleteMissionBtn from "./DeleteMissionBtn";
 import PublishedMissionDetailTable from "./PublishedMissionDetailTable";
 import ReviewMissionBtn from "./ReviewMissionBtn";
+import dynamic from "next/dynamic";
+// import DownloadResBtn from "./DownloadResBtn";
+const DownloadResBtn = dynamic(() => import("./DownloadResBtn"), {
+  ssr: false,
+});
 
 async function MyPublishedDetailPage({
   params: { missionId },
@@ -75,7 +80,9 @@ async function MyPublishedDetailPage({
           <ReviewMissionBtn missionId={missionId} />
         )}
 
-        {mission.status == "COMPLETED" && <Link href={`#`}>下载标注语料</Link>}
+        {(mission.status == "COMPLETED" || mission.passedCnt >= 2) && (
+          <DownloadResBtn missionId={missionId} />
+        )}
       </section>
     </>
   );
