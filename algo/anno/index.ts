@@ -1,9 +1,32 @@
 import { W3CAnno } from "@/app/dashboard/my-missions/[missionId]/anno/[imageIndex]/data";
-import { SuperCategory } from "@/constants";
+import { Box, Category, SERVER_URL, SuperCategory } from "@/constants";
 import CocoCategories from "@/constants/json/coco-categories.json";
+import CocoNumbered from "@/constants/json/coco-numbered.json";
 import { calcBIoU, DefaultAnno, UserAnno } from "../BIoU";
+import {
+  COCO_CATEGORIES,
+  CocoAnnotation,
+  CocoFormat,
+  CocoImage,
+  CocoInfo,
+  CocoLicense,
+} from "./coco";
 
 const BIoU_THRESHOLD = 0.5;
+
+export type AnnoResult = {
+  id: string;
+  url: string;
+  width: number | null;
+  height: number | null;
+  filename: string | null;
+  annos: {
+    score: number;
+    box: Box;
+    bIoU: number;
+    label: string;
+  }[];
+};
 
 export function w3cToUserAnno(w3cAnno: W3CAnno, accuracy: number): UserAnno {
   const [x, y, w, h] = w3cAnno.target.selector.value
@@ -82,7 +105,7 @@ export async function reviewAnnos(
             label: userAnno.label,
             score: accuracy,
             bIoU: maxBIoU,
-            box: userAnno.box,
+            box: correctedUserAnnoBox,
           });
       } else {
         // 判断用户 accuracy 是否大于最大 BIoU 标注 score
@@ -95,7 +118,7 @@ export async function reviewAnnos(
               label: userAnno.label,
               score: accuracy,
               bIoU: maxBIoU,
-              box: userAnno.box,
+              box: correctedUserAnnoBox,
             });
         }
       }
@@ -107,6 +130,7 @@ export async function reviewAnnos(
           score: accuracy,
           bIoU: maxBIoU,
           box: userAnno.box,
+          label: userAnno.label,
         });
       }
     }
@@ -115,7 +139,81 @@ export async function reviewAnnos(
   return reviewRes;
 }
 
-function getSuperCategory(category: string): SuperCategory | null {
+export function resultToCoco(
+  anno: AnnoResult[],
+  missionId: string,
+  description: string = "",
+  publisher: string = "system",
+): CocoFormat {
+  const info: CocoInfo = {
+    year: new Date().getFullYear(),
+    version: "1.0",
+    description: description,
+    contributor: publisher,
+    url: `${SERVER_URL}/dashboard/my-publish/${missionId}`,
+    date_created: new Date(),
+  };
+  const licenses: CocoLicense[] = [
+    {
+      id: 1,
+      name: "Attribution-NonCommercial-ShareAlike License",
+      url: "http://creativecommons.org/licenses/by-nc-sa/2.0/",
+    },
+  ];
+  const images: CocoImage[] = [];
+  const annotations: CocoAnnotation[] = [];
+  anno.forEach(function (a) {
+    const imageAnno = resultToCocoImageAnno(a);
+    for (const { image, annotation } of imageAnno) {
+      const isImageExisted = images.some((i) => i.coco_url == image.coco_url);
+      !isImageExisted && images.push(image);
+      annotations.push(annotation);
+    }
+  });
+
+  return {
+    info,
+    licenses,
+    images,
+    annotations,
+    // categories: COCO_CATEGORIES,
+  };
+}
+
+function resultToCocoImageAnno(anno: AnnoResult) {
+  return anno.annos.map(function (a, i) {
+    return {
+      image: {
+        id: anno.id,
+        url: anno.url,
+        width: anno.width ?? 0,
+        height: anno.height ?? 0,
+        file_name: anno.filename ?? "",
+        license: 1,
+        flickr_url: "",
+        coco_url: anno.url,
+        date_captured: new Date(),
+      },
+      annotation: {
+        id: anno.id + "_" + String(i).padStart(2, "0"),
+        image_id: anno.id,
+        category_id: CocoNumbered[a.label as Category] ?? NaN,
+        category: a.label,
+        segmentation: "RLE" as "RLE",
+        bbox: [
+          a.box.xmin,
+          a.box.ymin,
+          a.box.xmax - a.box.xmin,
+          a.box.ymax - a.box.ymin,
+        ] as [number, number, number, number],
+        area: (a.box.xmax - a.box.xmin) * (a.box.ymax - a.box.ymin),
+        iscrowd: (a.label == "person" ? 1 : 0) as 0 | 1,
+      },
+    };
+  });
+}
+
+export function getSuperCategory(category: string): SuperCategory | null {
   var superCategory: SuperCategory | null = null;
   for (const key in CocoCategories) {
     if (CocoCategories[key as SuperCategory].includes(category)) {
