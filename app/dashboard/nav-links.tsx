@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { FilePlus, FileText, Folder, Grid, List } from "react-feather";
+import { Compass, FilePlus, FileText, Folder, Grid, List } from "react-feather";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 
@@ -20,6 +20,7 @@ const links = [
     icon: Grid,
   },
   { name: "历史标注记录", href: "/dashboard/history", icon: List },
+  { name: "推荐任务", href: "/dashboard/recommend", icon: Compass },
 ];
 
 export default function NavLinks() {
