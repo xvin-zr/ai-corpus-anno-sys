@@ -1,5 +1,6 @@
 "use server";
 
+import { getSuperCategory } from "@/algo/anno";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
 import { Box } from "@/constants";
 import prisma from "@/prisma/client";
@@ -128,6 +129,9 @@ export async function publishMission(
       })
     )?.data?.results;
 
+    // 获得任务的最多的 Super Category
+    const mainCategory = getMainCategory(odRes);
+
     var insFileName: string | undefined;
     if (insFile instanceof File && insFile.size > 0) {
       const insFileBuffer = Buffer.from(await insFile.arrayBuffer());
@@ -161,6 +165,7 @@ export async function publishMission(
         reviewBySystem: String(reviewType) === "system" && odRes.length > 0,
         status: specifiedEmail ? "ONGOING" : "PENDING_ACCEPT",
         imagesIds: images.map((img) => img.id),
+        mainCategories: mainCategory,
         cocoAnnotation: {
           create: {
             info: {
@@ -241,4 +246,30 @@ export async function publishMission(
       msg: "发布失败",
     };
   }
+}
+
+function getMainCategory(
+  odRes: {
+    url: string;
+    id: string;
+    res: { score: number; label: string; box: Box }[];
+  }[],
+): string[] {
+  var max = 0;
+  const map = new Map<string, number>();
+  const res = new Set<string>();
+
+  for (const { res } of odRes) {
+    for (const r of res) {
+      const superCategory = getSuperCategory(r.label) ?? "";
+      const cnt = map.get(superCategory);
+      map.set(superCategory, cnt ? cnt + 1 : 1);
+      max = Math.max(max, map.get(superCategory) ?? 0);
+    }
+  }
+
+  for (const [sc, cnt] of map) {
+    if (cnt == max) res.add(sc);
+  }
+  return Array.from(res);
 }
