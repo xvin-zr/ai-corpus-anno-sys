@@ -93,7 +93,7 @@ export async function acceptMissionAction(missionId: string): Promise<{
     revalidatePath("/dashboard/my-missions");
     return {
       success: true,
-      msg: "接受成功",
+      msg: "测试通过，任务接受成功",
     };
   } catch (err) {
     console.error(err);

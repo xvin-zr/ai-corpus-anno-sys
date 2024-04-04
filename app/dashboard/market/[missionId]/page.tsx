@@ -110,11 +110,7 @@ async function MissionDetailPage({
       </div>
 
       <section className="mt-16 flex flex-col items-center justify-center gap-4">
-        <AcceptMissionBtn
-          userEmail={userEmail || ""}
-          publisherEmail={mission.publisherEmail}
-          missionId={missionId}
-        />
+        <AcceptMissionBtn missionId={missionId} />
 
         {userEmail == mission.publisherEmail && (
           <p className={clsx("opacity-60")}>无法接受自己发布的任务&nbsp;🤥</p>
