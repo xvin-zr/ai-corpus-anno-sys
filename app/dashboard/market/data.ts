@@ -1,9 +1,15 @@
+import { getCurrUserEmail } from "@/app/data";
+import { MAX_ALLOWED_RECIPIENTS, SuperCategory } from "@/constants";
 import prisma from "@/prisma/client";
 
 export const MISSION_PAGE_SIZE = 8;
 
-export async function fetchMissionPages(query: string): Promise<number> {
+export async function fetchMissionPages(
+  query: string,
+  category: SuperCategory | "All",
+): Promise<number> {
   try {
+    const userEmail = await getCurrUserEmail();
     const totalMissions = await prisma.mission.count({
       where: {
         title: {
@@ -11,6 +17,19 @@ export async function fetchMissionPages(query: string): Promise<number> {
           mode: "insensitive",
         },
         status: "PENDING_ACCEPT",
+        recipientEmail: null,
+        recipientsCnt: {
+          lt: MAX_ALLOWED_RECIPIENTS,
+        },
+        NOT: {
+          multiRecipientEmails: {
+            has: userEmail,
+          },
+          publisherEmail: userEmail,
+        },
+        mainCategories: {
+          has: category == "All" ? "_" : category,
+        },
       },
     });
 

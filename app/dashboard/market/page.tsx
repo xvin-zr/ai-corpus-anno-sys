@@ -1,3 +1,4 @@
+import { SuperCategory } from "@/constants";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { heading1Style } from "../components/header.style";
@@ -14,13 +15,16 @@ async function MarketPage({
   searchParams?: {
     query?: string;
     page?: string;
+    category?: string;
   };
 }) {
   console.log("searchParams:\n", searchParams);
   const query = searchParams?.query || "";
   const currPage = Number(searchParams?.page) || 1;
+  const category = searchParams?.category || "All";
 
-  const totalPage = await fetchMissionPages(query);
+  const totalPage =
+    (await fetchMissionPages(query, category as SuperCategory | "All")) || 1;
   console.log("\ntotalPage:\n", totalPage);
 
   const pageParsed = z.number().int().min(1).max(totalPage).safeParse(currPage);
@@ -37,7 +41,12 @@ async function MarketPage({
       </section>
 
       <section className="missions-section mt-8">
-        <MissionList query={query} currPage={currPage} totalPage={totalPage} />
+        <MissionList
+          query={query}
+          category={category as SuperCategory | "All"}
+          currPage={currPage}
+          totalPage={totalPage}
+        />
       </section>
 
       <section

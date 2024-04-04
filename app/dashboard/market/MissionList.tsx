@@ -1,5 +1,5 @@
 import { getCurrUserEmail } from "@/app/data";
-import { MAX_ALLOWED_RECIPIENTS } from "@/constants";
+import { MAX_ALLOWED_RECIPIENTS, SuperCategory } from "@/constants";
 import prisma from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,14 +7,21 @@ import { MISSION_PAGE_SIZE } from "./data";
 
 async function MissionList({
   query,
+  category,
   currPage,
   totalPage,
 }: {
   query: string;
+  category: SuperCategory | "All";
   currPage: number;
   totalPage: number;
 }) {
-  const missions = await fetchFilteredMissions(query, currPage, totalPage);
+  const missions = await fetchFilteredMissions(
+    query,
+    category,
+    currPage,
+    totalPage,
+  );
   // const totalPage = Math.ceil(missions.length / MISSION_PAGE_SIZE);
   // console.log(missions);
   // console.log(totalPage);
@@ -77,6 +84,7 @@ interface MissionItem {
 
 async function fetchFilteredMissions(
   query: string,
+  category: SuperCategory | "All",
   currPage: number,
   totalPage: number,
 ): Promise<MissionItem[]> {
@@ -112,6 +120,9 @@ async function fetchFilteredMissions(
           lt: MAX_ALLOWED_RECIPIENTS,
         },
         reviewBySystem: accuracy > 0.8 ? {} : true,
+        mainCategories: {
+          has: category == "All" ? "_" : category,
+        },
       },
       select: {
         id: true,
