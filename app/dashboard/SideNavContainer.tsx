@@ -6,7 +6,9 @@ import React from "react";
 function SideNavContainer({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAnnotating =
-    pathname.includes("/anno") || pathname.includes("/review");
+    pathname.includes("/anno") ||
+    pathname.includes("/review") ||
+    pathname.includes("/pre-task");
 
   return (
     <nav
