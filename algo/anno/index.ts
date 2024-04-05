@@ -124,19 +124,114 @@ export async function reviewAnnos(
       }
 
       // 判断标注是否已经存在
-      const isExisted = maxBIoUAnno?.group.some((anno) => anno.bIoU == maxBIoU);
-      if (maxBIoUAnno && !isExisted) {
-        maxBIoUAnno.group.push({
-          score: accuracy,
-          bIoU: maxBIoU,
-          box: userAnno.box,
-          label: userAnno.label,
-        });
-      }
+      // const isExisted = maxBIoUAnno?.group.some((anno) => anno.bIoU == maxBIoU);
+      // if (maxBIoUAnno && !isExisted) {
+      //   maxBIoUAnno.group.push({
+      //     score: accuracy,
+      //     bIoU: maxBIoU,
+      //     box: userAnno.box,
+      //     label: userAnno.label,
+      //   });
+      // }
     }
   }
 
   return reviewRes;
+}
+
+export async function reviewPreTask(
+  defaultAnnos: DefaultAnno[],
+  userAnnos: UserAnno[],
+  accuracy: number,
+  pixelRatio: number,
+): Promise<boolean> {
+  // 通过率大于 0.5 才审核通过
+  var reviewRes = true;
+  var passedAnnoCnt = 0;
+
+  // 得到 super catrgory Set
+  const superCategories = defaultAnnos.map(
+    (anno) => getSuperCategory(anno.label) ?? "",
+  );
+  const defaultLabels = new Set<string | null>(superCategories);
+
+  for (const userAnno of userAnnos) {
+    if (!defaultLabels.has(getSuperCategory(userAnno.label))) {
+      reviewRes = false;
+    } else {
+      let maxBIoU = 0;
+      let maxBIoUAnno: DefaultAnno | undefined;
+      const correctedUserAnnoBox = {
+        xmin: userAnno.box.xmin * pixelRatio,
+        ymin: userAnno.box.ymin * pixelRatio,
+        xmax: userAnno.box.xmax * pixelRatio,
+        ymax: userAnno.box.ymax * pixelRatio,
+      };
+      console.log("\nreview anno\n", correctedUserAnnoBox);
+
+      // 找到最大 BIoU 的标注
+      defaultAnnos
+        // .filter((defaultAnno) => defaultAnno.label == userAnno.label)
+        .forEach(function (defaultAnno) {
+          const bIoU = calcBIoU(defaultAnno.box, correctedUserAnnoBox);
+          if (bIoU >= BIoU_THRESHOLD && bIoU > maxBIoU) {
+            maxBIoU = bIoU;
+            maxBIoUAnno = defaultAnno;
+          }
+        });
+
+      console.log(maxBIoU, "\n", maxBIoUAnno, "\n", userAnno);
+      // 如果最大 BIoU 小于阈值，则标注不通过
+      if (maxBIoU < BIoU_THRESHOLD || !maxBIoUAnno) {
+        continue;
+      }
+
+      // BIoU 审核通过，计数
+      passedAnnoCnt += 1;
+
+      // 检查用户标注 label 与最大 BIoU 标注 label 是否一致
+      if (userAnno.label == String(maxBIoUAnno.label)) {
+        // 判断标注是否已经存在
+        const isExisted = maxBIoUAnno?.group.some(
+          (anno) => anno.bIoU == maxBIoU,
+        );
+        !isExisted &&
+          maxBIoUAnno.group.push({
+            label: userAnno.label,
+            score: accuracy,
+            bIoU: maxBIoU,
+            box: correctedUserAnnoBox,
+          });
+      } else {
+        // 判断用户 accuracy 是否大于最大 BIoU 标注 score
+        if (accuracy > maxBIoUAnno.score) {
+          const isExisted = maxBIoUAnno?.group.some(
+            (anno) => anno.bIoU == maxBIoU,
+          );
+          !isExisted &&
+            maxBIoUAnno.group.push({
+              label: userAnno.label,
+              score: accuracy,
+              bIoU: maxBIoU,
+              box: correctedUserAnnoBox,
+            });
+        }
+      }
+
+      // 判断标注是否已经存在
+      // const isExisted = maxBIoUAnno?.group.some((anno) => anno.bIoU == maxBIoU);
+      // if (maxBIoUAnno && !isExisted) {
+      //   maxBIoUAnno.group.push({
+      //     score: accuracy,
+      //     bIoU: maxBIoU,
+      //     box: userAnno.box,
+      //     label: userAnno.label,
+      //   });
+      // }
+    }
+  }
+
+  return reviewRes && passedAnnoCnt / defaultAnnos.length >= 0.5;
 }
 
 export function resultToCoco(
