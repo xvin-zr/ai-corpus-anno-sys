@@ -8,8 +8,8 @@ export async function fetchMissionPages(
   query: string,
   category: SuperCategory | "All",
 ): Promise<number> {
+  const userEmail = await getCurrUserEmail();
   try {
-    const userEmail = await getCurrUserEmail();
     const totalMissions = await prisma.mission.count({
       where: {
         title: {
@@ -57,6 +57,7 @@ export async function fetchMissionDetail(missionId: string) {
         status: true,
         insFileName: true,
         multiRecipientEmails: true,
+        reviewerEmail: true,
         passedCnt: true,
         images: {
           select: {
