@@ -9,6 +9,7 @@ import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { fetchMissionDetail } from "../../market/data";
+import { resultToYolo } from "@/algo/anno/yolo";
 
 export async function deleteMissionAction(
   missionId: string,
@@ -67,7 +68,10 @@ export async function deleteMissionAction(
   }
 }
 
-export async function downloadAnnoResultAction(missionId: string) {
+export async function downloadAnnoResultAction(
+  missionId: string,
+  annoResType: "coco" | "yolo",
+) {
   // 通过 missionId 拿到 imagesIds
   const mission = await fetchMissionDetail(missionId);
   if (!mission)
@@ -88,12 +92,16 @@ export async function downloadAnnoResultAction(missionId: string) {
   const res: AnnoResult[] = await Promise.all(annotationsPromises);
 
   console.log(res);
-  return resultToCoco(
-    res,
-    missionId,
-    mission?.description ?? "",
-    mission?.publisherEmail,
-  );
+  if (annoResType == "coco") {
+    return resultToCoco(
+      res,
+      missionId,
+      mission?.description ?? "",
+      mission?.publisherEmail,
+    );
+  } else {
+    return resultToYolo(res);
+  }
 }
 
 async function mapDefaultAnnoFn(anno: DefaultAnno) {
