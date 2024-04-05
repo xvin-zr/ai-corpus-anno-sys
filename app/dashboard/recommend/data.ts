@@ -3,6 +3,7 @@ import { DefaultAnno } from "@/algo/BIoU";
 import { getCurrUserEmail } from "@/app/data";
 import { MAX_ALLOWED_RECIPIENTS } from "@/constants";
 import prisma from "@/prisma/client";
+import { redirect } from "next/navigation";
 
 async function fetchUserPassedMissionIds(): Promise<string[]> {
   try {
@@ -64,6 +65,9 @@ export async function fetchUserPassedDefaultAnnos() {
 export async function fetchUserRecommendMissions() {
   try {
     const userEmail = await getCurrUserEmail();
+    if (!userEmail) {
+        redirect("/auth/signin");
+    }
     const defaultAnnos = await fetchUserPassedDefaultAnnos();
     const mainCategory = getUserMainCategory(defaultAnnos);
     console.log("\nrecommend\n", mainCategory);
