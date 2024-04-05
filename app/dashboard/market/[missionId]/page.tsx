@@ -72,7 +72,7 @@ async function MissionDetailPage({
               <tr className={trStyle}>
                 <td className={tdStyle + " border-l-0"}>图片数量</td>
                 <td className={[tdStyle, "border-r-0"].join(" ")}>
-                  {mission.images.length}
+                  {mission?.images.length}
                 </td>
               </tr>
               <tr className={trStyle}>
