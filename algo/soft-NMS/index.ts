@@ -6,6 +6,15 @@ const NMS_THRESH = 0.2;
 const SIGMA = 0.5;
 
 export function softNMS(defaultAnnos: DefaultAnno) {
+  // 低分数时判断所有用户标注的 label 是否一致
+  if (defaultAnnos.score < 0.75) {
+    const thisLabel = defaultAnnos.group[0].label;
+    const isSame = defaultAnnos.group.every((anno) => anno.label == thisLabel);
+    // 不一致跳过该标注
+    if (!isSame) return [];
+  }
+
+  // 置信度高或者低置信度且标注一致时，使用 soft NMS
   const sortedAnnos = defaultAnnos.group
     .map(function calcScore(anno) {
       return {
