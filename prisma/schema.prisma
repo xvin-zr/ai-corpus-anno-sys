@@ -99,6 +99,7 @@ model Mission {
   recipientsCnt        Int             @default(0)
   passedCnt            Int             @default(0)
   rejectedCnt          Int             @default(0)
+  reviewerEmail        String?
   mainCategories       String[]        @default(["_"])
   createdAt            DateTime        @default(now())
   updatedAt            DateTime?       @updatedAt
