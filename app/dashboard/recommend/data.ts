@@ -5,8 +5,8 @@ import { MAX_ALLOWED_RECIPIENTS } from "@/constants";
 import prisma from "@/prisma/client";
 
 async function fetchUserPassedMissionIds(): Promise<string[]> {
+  const userEmail = await getCurrUserEmail();
   try {
-    const userEmail = await getCurrUserEmail();
     const userMissions = await prisma.userMission.findMany({
       where: {
         email: userEmail,
@@ -28,31 +28,36 @@ async function fetchUserPassedMissionIds(): Promise<string[]> {
 export async function fetchUserPassedDefaultAnnos() {
   try {
     const missionIds = await fetchUserPassedMissionIds();
-    const imagesIds = (
-      await prisma.mission.findMany({
-        where: {
-          id: {
-            in: missionIds,
-          },
+    const imagesIds = await prisma.mission.findMany({
+      where: {
+        id: {
+          in: missionIds,
         },
-        select: {
-          imagesIds: true,
-        },
-      })
-    ).flatMap((mission) => mission.imagesIds);
+      },
+      select: {
+        imagesIds: true,
+        updatedAt: true,
+      },
+    });
+    // .flatMap((mission) => mission.imagesIds);
 
-    const defaultAnnos: DefaultAnno[] = (
+    const defaultAnnos: { anno: DefaultAnno[]; updatedAt: Date }[] = (
       await prisma.w3CAnnotation.findMany({
         where: {
           imageId: {
-            in: imagesIds,
+            in: imagesIds.flatMap((image) => image.imagesIds),
           },
         },
-        select: { defaultAnnotations: true },
+        select: { defaultAnnotations: true, imageId: true },
       })
-    )
-      .flatMap((anno) => anno.defaultAnnotations as DefaultAnno)
-      .filter((anno) => anno.group.length > 0);
+    ).flatMap((anno) => {
+      return {
+        anno: anno.defaultAnnotations as DefaultAnno[],
+        updatedAt:
+          imagesIds.find(({ imagesIds }) => imagesIds.includes(anno.imageId))
+            ?.updatedAt ?? new Date(),
+      };
+    });
 
     return defaultAnnos;
   } catch (err) {
@@ -92,6 +97,9 @@ export async function fetchUserRecommendMissions() {
         },
         reviewBySystem: accuracy > 0.8 ? {} : true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     return recommendMissions;
   } catch (err) {
@@ -100,22 +108,43 @@ export async function fetchUserRecommendMissions() {
   }
 }
 
-function getUserMainCategory(defaultAnnos: DefaultAnno[]): string[] {
-  const map = new Map<string, number>();
-  var max = 0;
-  const res = new Set<string>();
+function getUserMainCategory(
+  defaultAnnos: { anno: DefaultAnno[]; updatedAt: Date }[],
+): string[] {
+  const map = new Map<string, { cnt: number; totalWeight: number }>();
 
-  for (const { label } of defaultAnnos) {
-    const superCategory = getSuperCategory(label) ?? "";
-    const cnt = map.get(superCategory) ?? 0;
-    map.set(superCategory, cnt + 1);
-    max = Math.max(max, cnt + 1);
-  }
+  for (const { anno, updatedAt } of defaultAnnos) {
+    anno.forEach(({ label }) => {
+      const superCategory = getSuperCategory(label) ?? "";
+      const weight = calcDecayFactor(updatedAt);
 
-  for (const [label, cnt] of map) {
-    if (cnt === max) {
-      res.add(label);
-    }
+      if (!map.has(superCategory)) {
+        map.set(superCategory, { cnt: 0, totalWeight: 0 });
+      }
+      const categoryData = map.get(superCategory)!;
+      categoryData.cnt += 1;
+      categoryData.totalWeight += weight;
+    });
   }
-  return Array.from(res);
+  console.log(map);
+
+  return Array.from(map)
+    .sort(
+      (a, b) =>
+        b[1].cnt * 0.5 + b[1].totalWeight - (a[1].cnt * 0.4 + a[1].totalWeight),
+    )
+    .slice(0, 3)
+    .map((a) => a[0]);
+}
+
+function calcDecayFactor(
+  updatedAt: Date,
+  decayRate: number = 0.5,
+  halfLife: number = 21,
+): number {
+  const currentTime = new Date();
+  const elapsedTime = currentTime.getTime() - updatedAt.getTime();
+  return Math.exp(
+    (-decayRate * elapsedTime) / (halfLife * 24 * 60 * 60 * 1000),
+  );
 }
