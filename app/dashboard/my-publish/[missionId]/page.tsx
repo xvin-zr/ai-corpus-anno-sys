@@ -10,6 +10,7 @@ import DeleteMissionBtn from "./DeleteMissionBtn";
 import PublishedMissionDetailTable from "./PublishedMissionDetailTable";
 import ReviewMissionBtn from "./ReviewMissionBtn";
 import dynamic from "next/dynamic";
+import { getCurrUserEmail } from "@/app/data";
 // import DownloadResBtn from "./DownloadResBtn";
 const DownloadResBtn = dynamic(() => import("./DownloadResBtn"), {
   ssr: false,
@@ -27,7 +28,10 @@ async function MyPublishedDetailPage({
 
   const session = await getServerSession(authOptions);
   const userEmail = session?.user?.email;
-  if (!userEmail) {
+  if (
+    !userEmail ||
+    (userEmail != mission.publisherEmail && userEmail != mission.reviewerEmail)
+  ) {
     notFound();
   }
 

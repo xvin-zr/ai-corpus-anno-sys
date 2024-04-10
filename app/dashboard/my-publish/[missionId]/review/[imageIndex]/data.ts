@@ -19,7 +19,14 @@ export const fetchImagesIds = cache(async function fetchImagesIds(
       await prisma.mission.findUnique({
         where: {
           id: missionId,
-          publisherEmail: userEmail,
+          OR: [
+            {
+              publisherEmail: userEmail,
+            },
+            {
+              reviewerEmail: userEmail,
+            },
+          ],
         },
         select: {
           imagesIds: true,
