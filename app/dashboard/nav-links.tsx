@@ -1,8 +1,15 @@
 "use client";
-import Link from "next/link";
-import { Compass, FilePlus, FileText, Folder, Grid, List } from "react-feather";
 import clsx from "clsx";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  CheckSquare,
+  Compass,
+  FilePlus,
+  FileText,
+  Folder,
+  Grid,
+} from "react-feather";
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
@@ -14,13 +21,14 @@ const links = [
     href: "/dashboard/publish",
     icon: FilePlus,
   },
+  { name: "审核任务", href: "/dashboard/my-review", icon: CheckSquare },
   {
     name: "寻找任务",
     href: "/dashboard/market",
     icon: Grid,
   },
-  { name: "历史标注记录", href: "/dashboard/history", icon: List },
   { name: "推荐任务", href: "/dashboard/recommend", icon: Compass },
+  // { name: "历史标注记录", href: "/dashboard/history", icon: List },
 ];
 
 export default function NavLinks() {
