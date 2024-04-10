@@ -7,7 +7,6 @@ export async function getCurrUserEmail(): Promise<string> {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       redirect("/auth/signin");
-      return "";
     }
     return session.user.email;
   } catch (err) {
