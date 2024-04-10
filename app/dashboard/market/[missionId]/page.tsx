@@ -8,15 +8,19 @@ import { heading1Style } from "../../components/header.style";
 import { fetchMissionDetail } from "../data";
 import AcceptMissionBtn from "./AcceptMissionBtn";
 import Carousel from "./Carousel";
+import NotInterestBtn from "./NotInterestBtn";
 
 export const tdStyle = clsx("border border-zinc-300 p-3 dark:border-zinc-600");
 export const trStyle = clsx("odd:bg-zinc-100 odd:dark:bg-zinc-800/50");
 
 async function MissionDetailPage({
   params: { missionId },
+  searchParams,
 }: {
   params: { missionId: string };
+  searchParams?: { recommend: "true" | "false" };
 }) {
+  const isRecommend = searchParams?.recommend === "true";
   const mission = await fetchMissionDetail(missionId);
   if (!mission) {
     notFound();
@@ -109,7 +113,9 @@ async function MissionDetailPage({
         </div>
       </div>
 
-      <section className="mt-16 flex flex-col items-center justify-center gap-4">
+      <section className="mt-16 flex items-center justify-center gap-4">
+        {/* {isRecommend && <NotInterestBtn />} */}
+
         <AcceptMissionBtn missionId={missionId} />
 
         {userEmail == mission.publisherEmail && (
