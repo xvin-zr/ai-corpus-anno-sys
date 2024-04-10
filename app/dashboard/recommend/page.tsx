@@ -64,7 +64,7 @@ async function RecommendPage() {
                     </td>
                     <td className="p-4">
                       <Link
-                        href={`/dashboard/market/${mission.id}`}
+                        href={`/dashboard/market/${mission.id}?recommend=true`}
                         className="rounded-md px-2 py-1 text-base font-[475] text-blue-bupt hover:bg-zinc-200/70 dark:hover:bg-zinc-600/60"
                       >
                         详情
