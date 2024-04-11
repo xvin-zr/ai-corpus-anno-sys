@@ -53,7 +53,10 @@ export async function reviewAnnos(
 ): Promise<boolean> {
   var reviewRes = true;
 
-  if (Math.abs(defaultAnnos.length - userAnnos.length) >= 3) {
+  if (
+    Math.abs(defaultAnnos.length - userAnnos.length) >= 3 ||
+    userAnnos.length == 0
+  ) {
     reviewRes = false;
   }
   // 得到 super catrgory Set
@@ -136,6 +139,65 @@ export async function reviewAnnos(
     }
   }
 
+  return reviewRes;
+}
+
+export async function reviewBeforePublisher(
+  defaultAnnos: DefaultAnno[],
+  userAnnos: UserAnno[],
+  cand_labels: string[],
+  accuracy: number = 0.6,
+  pixelRatio: number = 2,
+): Promise<boolean> {
+  var reviewRes = true;
+
+  if (userAnnos.length == 0) {
+    return false;
+  }
+
+  for (const userAnno of userAnnos) {
+    if (!cand_labels.includes(userAnno.label)) {
+      return false;
+    }
+    let maxBIoU = 0;
+    let maxBIoUAnno: DefaultAnno | undefined;
+    const correctedUserAnnoBox = {
+      xmin: userAnno.box.xmin * pixelRatio,
+      ymin: userAnno.box.ymin * pixelRatio,
+      xmax: userAnno.box.xmax * pixelRatio,
+      ymax: userAnno.box.ymax * pixelRatio,
+    };
+    console.log("\nreview anno\n", correctedUserAnnoBox);
+
+    // 找到最大 BIoU 的标注
+    defaultAnnos.forEach(function (defaultAnno) {
+      const bIoU = calcBIoU(defaultAnno.box, correctedUserAnnoBox);
+      if (bIoU >= BIoU_THRESHOLD && bIoU > maxBIoU) {
+        maxBIoU = bIoU;
+        maxBIoUAnno = defaultAnno;
+      }
+    });
+
+    console.log(maxBIoU, "\n", maxBIoUAnno, "\n", userAnno);
+    // 如果最大 BIoU 小于阈值，则标注不通过
+    if (
+      maxBIoU < BIoU_THRESHOLD ||
+      !maxBIoUAnno ||
+      userAnno.label != maxBIoUAnno.label
+    ) {
+      reviewRes = false;
+      continue;
+    }
+
+    const isExisted = maxBIoUAnno?.group.some((anno) => anno.bIoU == maxBIoU);
+    !isExisted &&
+      maxBIoUAnno.group.push({
+        label: userAnno.label,
+        score: accuracy,
+        bIoU: maxBIoU,
+        box: correctedUserAnnoBox,
+      });
+  }
   return reviewRes;
 }
 
