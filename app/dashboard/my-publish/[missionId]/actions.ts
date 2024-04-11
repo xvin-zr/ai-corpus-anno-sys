@@ -1,8 +1,8 @@
 "use server";
 
-import { AnnoResult, resultToCoco } from "@/algo/anno";
+import { AnnoResult, resultToCoco, w3cToUserAnno } from "@/algo/anno";
 import { DefaultAnno } from "@/algo/BIoU";
-import { softNMS } from "@/algo/soft-NMS";
+import { defaultSoftNMS, userSoftNMS } from "@/algo/soft-NMS";
 import { fetchDefaultAnnos } from "@/algo/soft-NMS/data";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
 import prisma from "@/prisma/client";
@@ -10,6 +10,11 @@ import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { fetchMissionDetail } from "../../market/data";
 import { resultToYolo } from "@/algo/anno/yolo";
+import {
+  fetchThisMissionType,
+  W3CAnno,
+} from "../../my-missions/[missionId]/anno/[imageIndex]/data";
+import { getCurrUserEmail } from "@/app/data";
 
 export async function deleteMissionAction(
   missionId: string,
@@ -78,15 +83,26 @@ export async function downloadAnnoResultAction(
     throw new Error("mission not found in downloadAnnoResultAction");
   const imagesIds = await fetchImagesIds(missionId);
   const imagesInfos = await fetchImagesInfos(imagesIds);
+  const thisMissionType = await fetchThisMissionType(missionId);
 
   // 并行获取所有图片的 annotations
   const annotationsPromises = imagesInfos.map(async (info) => {
+    // 该图片的 default anno
     const { defaultAnnotations } = await fetchDefaultAnnos(info.id);
     const filteredAnnotations = defaultAnnotations.filter(
       (anno) => anno.group.length > 0,
     );
-    const annos = await Promise.all(filteredAnnotations.map(mapDefaultAnnoFn));
-    return { ...info, annos: annos.flat() };
+    // 该图片用户的标注
+    const userAnnos = await fetchUserAnnos(info.id);
+    const annos = (
+      await Promise.all(filteredAnnotations.map(mapDefaultAnnoFn))
+    ).flat();
+    console.log(annos);
+    if (thisMissionType == "sysOnly") {
+      return { ...info, annos: annos };
+    } else {
+      return { ...info, annos: userSoftNMS(annos.concat(userAnnos)) };
+    }
   });
 
   const res: AnnoResult[] = await Promise.all(annotationsPromises);
@@ -105,7 +121,7 @@ export async function downloadAnnoResultAction(
 }
 
 async function mapDefaultAnnoFn(anno: DefaultAnno) {
-  return softNMS(anno);
+  return defaultSoftNMS(anno);
 }
 
 async function fetchImagesInfos(imagesIds: string[]) {
@@ -147,5 +163,54 @@ async function fetchImagesIds(missionId: string) {
   } catch (err) {
     console.error(err);
     throw new Error("fetch images ids failed");
+  }
+}
+
+async function fetchUserAnnos(imageId: string) {
+  try {
+    const { recipientEmail } = (await prisma.mission.findFirst({
+      where: {
+        imagesIds: {
+          has: imageId,
+        },
+      },
+      select: {
+        recipientEmail: true,
+      },
+    })) ?? { recipientEmail: "" };
+    const { accuracy } = (await prisma.user.findUnique({
+      where: {
+        email: recipientEmail ?? "",
+      },
+      select: {
+        accuracy: true,
+      },
+    })) ?? { accuracy: 0.6 };
+    const { w3cAnnotations } = ((await prisma.userAnnotation.findUnique({
+      where: {
+        imageId_email: {
+          email: recipientEmail ?? "",
+          imageId: imageId,
+        },
+      },
+      select: {
+        w3cAnnotations: true,
+      },
+    })) ?? { w3cAnnotations: [] }) as unknown as { w3cAnnotations: W3CAnno[] };
+    const userAnnos = w3cAnnotations.map((anno) => {
+      const ua = w3cToUserAnno(anno, accuracy);
+      ua.box.xmin *= 2;
+      ua.box.ymin *= 2;
+      ua.box.xmax *= 2;
+      ua.box.ymax *= 2;
+      return {
+        ...ua,
+        bIoU: ua.score,
+      };
+    });
+    return userAnnos;
+  } catch (err) {
+    console.error(err);
+    throw new Error("error in fetch user annos");
   }
 }
