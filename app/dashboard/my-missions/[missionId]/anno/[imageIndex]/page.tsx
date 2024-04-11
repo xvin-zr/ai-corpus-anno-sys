@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import AnnoActions from "./AnnoActions";
 import AnnotationHeader from "./AnnotationHeader";
 import {
-  fetchDefaultAnnosLen,
+  fetchDefaultAnnos,
   fetchImageInfo,
   fetchImagesIds,
+  fetchReviewType,
   fetchW3cAnnos,
 } from "./data";
 const Annotator = dynamic(() => import("./Annotator"), { ssr: false });
@@ -23,6 +24,7 @@ async function ImageAnnotationPage({
     notFound();
   }
   const imagesIds = await fetchImagesIds(missionId);
+  const { reviewBySystem, recipientsCnt } = await fetchReviewType(missionId);
   if (Number(imageIndex) < 0 || Number(imageIndex) >= imagesIds.length) {
     notFound();
   }
@@ -31,8 +33,9 @@ async function ImageAnnotationPage({
     imagesIds[Number(imageIndex)],
   );
   const w3cAnnos = await fetchW3cAnnos(imagesIds[parseInt(imageIndex)]);
-  const defaultAnnosCnt = await fetchDefaultAnnosLen(
-    imagesIds[parseInt(imageIndex)],
+  const defaultAnnos = await fetchDefaultAnnos(imagesIds[parseInt(imageIndex)]);
+  const labels: string[] = Array.from(
+    new Set(defaultAnnos.map((anno) => anno.label)),
   );
 
   return (
@@ -65,7 +68,10 @@ async function ImageAnnotationPage({
           imageIndex={parseInt(imageIndex)}
           imageId={imagesIds[parseInt(imageIndex)]}
           imagesCount={imagesIds.length}
-          defaultAnnosCnt={defaultAnnosCnt}
+          defaultAnnosCnt={defaultAnnos.length}
+          reviewBySystem={reviewBySystem}
+          recipientsCnt={recipientsCnt}
+          labels={labels}
         />
       </section>
     </>

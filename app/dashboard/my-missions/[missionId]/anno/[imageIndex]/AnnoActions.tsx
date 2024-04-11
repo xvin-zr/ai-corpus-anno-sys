@@ -15,22 +15,29 @@ function AnnoActions({
   imageId,
   imagesCount,
   defaultAnnosCnt,
+  reviewBySystem,
+  recipientsCnt,
+  labels,
 }: {
   missionId: string;
   imageIndex: number;
   imageId: string;
   imagesCount: number;
   defaultAnnosCnt: number;
+  reviewBySystem: boolean;
+  recipientsCnt: number;
+  labels: string[];
 }) {
   console.log("defaultAnnosCnt", defaultAnnosCnt);
   const { push } = useRouter();
   const [anno, setAnno] = useAtom(annoAtom);
   const [isPending, startPageChangeTransition] = useTransition();
+  const onlyReviewByHuman = !reviewBySystem && recipientsCnt == 0;
 
   function handlePageChange() {
     startPageChangeTransition(async function pageChange() {
       const w3cAnnos = (anno as any)?.getAnnotations();
-      await uploadW3cAnnoAction(w3cAnnos, imageId);
+      await uploadW3cAnnoAction(w3cAnnos, imageId, missionId);
     });
   }
 
@@ -50,10 +57,20 @@ function AnnoActions({
         <ArrowLeft />
         上一个
       </button>
+      <span className="text-lg">
+        建议最低标注数量：
+        {!onlyReviewByHuman
+          ? Math.max(defaultAnnosCnt - 1, 1)
+          : Math.floor(defaultAnnosCnt / labels.length) || 1}
+      </span>
 
-      <span className="text-lg">建议最低标注数量：{defaultAnnosCnt}</span>
-
-      <CategoryPicker />
+      {!onlyReviewByHuman && <CategoryPicker />}
+      {onlyReviewByHuman && (
+        <span className="text-lg font-semibold">
+          类别：
+          <span className="font-normal">{labels.join(", ")}</span>
+        </span>
+      )}
 
       <button
         className={clsx(

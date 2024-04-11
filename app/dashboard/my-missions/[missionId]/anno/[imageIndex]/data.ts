@@ -91,6 +91,38 @@ export async function fetchW3cAnnos(imageId: string) {
   }
 }
 
+export async function fetchReviewType(missionId: string) {
+  try {
+    return (
+      (await prisma.mission.findUnique({
+        where: {
+          id: missionId,
+        },
+        select: {
+          reviewBySystem: true,
+          recipientsCnt: true,
+        },
+      })) ?? { reviewBySystem: false, recipientsCnt: 0 }
+    );
+  } catch (err) {
+    console.error(err);
+    throw new Error("error in fetch review type");
+  }
+}
+
+export async function fetchThisMissionType(missionId: string) {
+  try {
+    const { reviewBySystem, recipientsCnt } = await fetchReviewType(missionId);
+    if (!reviewBySystem && recipientsCnt == 0) return "humanOnly";
+    if (reviewBySystem && recipientsCnt >= 0) return "sysOnly";
+    if (!reviewBySystem && recipientsCnt > 0) return "upgraded";
+    else return "sysOnly";
+  } catch (err) {
+    console.error(err);
+    throw new Error("error in fetch this mission type");
+  }
+}
+
 export interface W3CAnno {
   id: string;
   body: {
@@ -106,7 +138,7 @@ export interface W3CAnno {
   };
 }
 
-export async function fetchDefaultAnnosLen(imageId: string) {
+export async function fetchDefaultAnnos(imageId: string) {
   try {
     const { defaultAnnotations = [] } =
       (await prisma.w3CAnnotation.findUnique({
@@ -117,7 +149,7 @@ export async function fetchDefaultAnnosLen(imageId: string) {
           defaultAnnotations: true,
         },
       })) ?? {};
-    return Math.max((defaultAnnotations as DefaultAnno[]).length - 1, 1);
+    return defaultAnnotations as DefaultAnno[];
   } catch (err) {
     console.error(err);
     throw new Error("error in fetch default annotations");

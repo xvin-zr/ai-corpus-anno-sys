@@ -1,5 +1,5 @@
 "use server";
-import { reviewAnnos, w3cToUserAnno } from "@/algo/anno";
+import { reviewAnnos, reviewBeforePublisher, w3cToUserAnno } from "@/algo/anno";
 import { DefaultAnno } from "@/algo/BIoU";
 import { getCurrUserEmail } from "@/app/data";
 import { REWARD_PERCENTAGE } from "@/constants";
@@ -8,11 +8,12 @@ import { Prisma } from "@prisma/client";
 import Decimal from "decimal.js";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { W3CAnno } from "./data";
+import { fetchImagesIds, fetchThisMissionType, W3CAnno } from "./data";
 
 export async function uploadW3cAnnoAction(
   w3cAnnos: W3CAnno[],
   imageId: string,
+  missionId: string,
   pixelRatio: number = 2,
 ) {
   try {
@@ -43,12 +44,30 @@ export async function uploadW3cAnnoAction(
       },
     )) ?? {}) as { defaultAnnotations: DefaultAnno[] };
 
-    const reviewRes = await reviewAnnos(
-      defaultAnnotations ?? [],
-      w3cAnnos.map((anno) => w3cToUserAnno(anno, accuracy)),
-      accuracy,
-      pixelRatio,
-    );
+    const thisMissionType = await fetchThisMissionType(missionId);
+    console.log(thisMissionType);
+
+    var reviewRes: boolean;
+    if (thisMissionType == "humanOnly") {
+      const cand_labels = Array.from(
+        new Set(defaultAnnotations.map((anno) => anno.label)),
+      );
+
+      reviewRes = await reviewBeforePublisher(
+        defaultAnnotations,
+        w3cAnnos.map((anno) => w3cToUserAnno(anno, accuracy)),
+        cand_labels,
+        accuracy,
+      );
+    } else {
+      reviewRes = await reviewAnnos(
+        defaultAnnotations ?? [],
+        w3cAnnos.map((anno) => w3cToUserAnno(anno, accuracy)),
+        accuracy,
+        pixelRatio,
+      );
+    }
+
     console.log("review result:", reviewRes);
     console.log(defaultAnnotations);
 
@@ -82,7 +101,7 @@ export async function uploadW3cAnnoAction(
         defaultAnnotations: defaultAnnotations,
       },
     });
-    console.log("uploaded annos:", uploadedAnnos);
+    // console.log("uploaded annos:", uploadedAnnos);
   } catch (err) {
     console.error(err);
     throw new Error("error in upload w3c annotations");
@@ -97,7 +116,7 @@ export async function completeMissionAction(
 ): Promise<boolean> {
   try {
     const userEmail = await getCurrUserEmail();
-    await uploadW3cAnnoAction(w3cAnnos, imageId, pixelRatio);
+    await uploadW3cAnnoAction(w3cAnnos, imageId, missionId, pixelRatio);
     await prisma.userAnnotation.deleteMany({
       where: {
         w3cAnnotations: {
@@ -105,6 +124,10 @@ export async function completeMissionAction(
         },
       },
     });
+
+    const thisMissionType = await fetchThisMissionType(missionId);
+
+    // 先将状态设置成待审核
     await prisma.userMission.update({
       where: {
         missionId_email: {
@@ -137,7 +160,7 @@ export async function completeMissionAction(
       },
     })) ?? { imagesIds: [] };
 
-    if (reviewBySystem) {
+    if (thisMissionType == "sysOnly") {
       // TODO: 系统自动审核
       const reviewResults = await prisma.userAnnotation.findMany({
         where: {
@@ -226,7 +249,7 @@ export async function completeMissionAction(
           accuracy: updatedUser.passedMissionCnt / updatedUser.totalMissionCnt,
         },
       });
-    } else {
+    } else if (thisMissionType == "upgraded") {
       // 由人工审核，用户标注 reviewPassed 为 null
       await prisma.userAnnotation.updateMany({
         where: {
@@ -246,6 +269,31 @@ export async function completeMissionAction(
         },
         data: {
           status: "PENDING_REVIEW",
+        },
+      });
+    } else if (thisMissionType == "humanOnly") {
+      const reviewResults = await prisma.userAnnotation.findMany({
+        where: {
+          imageId: {
+            in: imagesIds,
+          },
+          email: userEmail,
+          NOT: {
+            reviewPassed: null,
+          },
+        },
+        select: {
+          reviewPassed: true,
+        },
+      });
+      const missionPassed = reviewResults.every((res) => res.reviewPassed);
+
+      await prisma.mission.update({
+        where: {
+          id: missionId,
+        },
+        data: {
+          status: missionPassed ? "COMPLETED" : "PENDING_REVIEW",
         },
       });
     }
