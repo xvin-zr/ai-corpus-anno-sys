@@ -33,10 +33,18 @@ export async function publishMission(
   const reviewType = formData.get("review-type");
   const insFile = formData.get("instruction-file");
   const specifiedEmail = formData.get("specified-email");
+  const reviewerEmail = String(formData.get("reviewer-email") ?? "");
 
   console.log(title, reward, description);
   console.log(reviewType, insFile);
-  console.log(specifiedEmail);
+  console.log(specifiedEmail, reviewerEmail);
+
+  if (specifiedEmail && reviewerEmail && specifiedEmail == reviewerEmail) {
+    return {
+      success: false,
+      msg: "标注人员和审核人员不能相同",
+    };
+  }
 
   const parsed = z
     .object({
@@ -68,6 +76,14 @@ export async function publishMission(
       };
     }
   }
+
+  // console.table(
+  //   parsed.data.description
+  //     .trim()
+  //     .split(",")
+  //     .map((s: string) => s.trim()),
+  // );
+  // return { success: false, msg: "发布失败" };
 
   try {
     const session = await getServerSession(authOptions);
@@ -114,23 +130,45 @@ export async function publishMission(
     }
 
     // 获得预标注结果
-    const odRes: {
+    var odRes: {
       url: string;
       id: string;
       res: { score: number; label: string; box: Box }[];
-    }[] = (
-      await axios.post(OD_SERVER, {
-        images: imgs.map((img) => {
-          return {
-            url: img.secure_url,
-            id: img.public_id,
-          };
-        }),
-      })
-    )?.data?.results;
+    }[] = [];
+
+    if (reviewType == "system") {
+      // 系统审核的预标注
+      odRes = (
+        await axios.post(OD_SERVER, {
+          images: imgs.map((img) => {
+            return {
+              url: img.secure_url,
+              id: img.public_id,
+            };
+          }),
+        })
+      )?.data?.results;
+    } else {
+      // 人工审核的预标注
+      odRes = (
+        await axios.post(`http://localhost:3003/api/zero-shot-OD`, {
+          images: imgs.map((img) => {
+            return {
+              url: img.secure_url,
+              id: img.public_id,
+            };
+          }),
+          candidate_labels: parsed.data.description
+            .trim()
+            .split(",")
+            .map((s: string) => s.trim()),
+        })
+      )?.data?.results;
+    }
 
     // 获得任务的最多的 Super Category
     const mainCategory = getMainCategory(odRes);
+    mainCategory.push("_");
 
     var insFileName: string | undefined;
     if (insFile instanceof File && insFile.size > 0) {
@@ -166,6 +204,7 @@ export async function publishMission(
         status: specifiedEmail ? "ONGOING" : "PENDING_ACCEPT",
         imagesIds: images.map((img) => img.id),
         mainCategories: mainCategory,
+        reviewerEmail: reviewerEmail == "" ? null : reviewerEmail,
         cocoAnnotation: {
           create: {
             info: {

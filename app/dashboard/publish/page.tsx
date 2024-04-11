@@ -2,6 +2,7 @@ import React from "react";
 import CldUploadBtn from "./CldUploadBtn";
 import PublishBtn from "./PublishBtn";
 import { heading1Style } from "../components/header.style";
+import ReviewType from "./ReviewType";
 
 function PublishMissionPage() {
   const labelStyle = "block space-y-1";
@@ -42,59 +43,14 @@ function PublishMissionPage() {
           </span>
         </label>
 
-        <div className=" space-y-1">
-          <span className={labelSpanStyle}>审核类型</span>
-          <div className="flex items-center">
-            <input
-              type="radio"
-              name="review-type"
-              // className="peer inline-block rounded px-2 py-1 shadow-sm  ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
-              value={"system"}
-              id="system"
-              defaultChecked
-            />
-            <label htmlFor="system" className="ml-1 inline-block">
-              系统审核
-            </label>
-
-            <input
-              type="radio"
-              name="review-type"
-              className="peer/human ml-4"
-              // className="peer inline-block rounded px-2 py-1 shadow-sm  ring-inset focus:ring-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
-              value={"human"}
-              id="human"
-            />
-            <label htmlFor="human" className="ml-1 inline-block">
-              人工审核
-            </label>
-
-            <input
-              type="email"
-              name="specified-email"
-              className="ml-6 hidden rounded px-2 py-1 shadow-sm  ring-inset focus:ring-blue-bupt peer-checked/human:inline-block dark:bg-zinc-800 dark:focus:ring-v-success"
-              placeholder="指定标注人员邮箱（可选）"
-              accept=".pdf,.md,application/zip,application/x-7z-compressed"
-            />
-          </div>
-        </div>
-
-        <label className="block space-y-1">
-          <span className="block text-xl font-medium">任务描述和指导文件</span>
-          <textarea
-            name="description"
-            className="block rounded px-2 py-2 text-base shadow-sm focus:border-blue-bupt dark:bg-zinc-800 dark:focus:ring-v-success"
-            cols={23}
-            rows={4}
-            maxLength={50}
-          />
-        </label>
+        <ReviewType />
 
         <label className="block">
           <span className="sr-only">上传要求文件</span>
           <input
             type="file"
             name="instruction-file"
+            accept=".pdf,.md,application/zip,application/x-7z-compressed"
             className="w-full text-sm file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-zinc-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-zinc-50 file:shadow file:transition-colors hover:file:bg-zinc-500 file:dark:bg-zinc-700 file:dark:hover:bg-zinc-800
     "
           />
