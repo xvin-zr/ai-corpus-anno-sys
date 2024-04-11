@@ -116,7 +116,10 @@ async function MissionDetailPage({
       <section className="mt-16 flex items-center justify-center gap-4">
         {/* {isRecommend && <NotInterestBtn />} */}
 
-        <AcceptMissionBtn missionId={missionId} />
+        <AcceptMissionBtn
+          missionId={missionId}
+          reviewBySystem={mission.reviewBySystem}
+        />
 
         {userEmail == mission.publisherEmail && (
           <p className={clsx("opacity-60")}>无法接受自己发布的任务&nbsp;🤥</p>

@@ -58,6 +58,7 @@ export async function fetchMissionDetail(missionId: string) {
         insFileName: true,
         multiRecipientEmails: true,
         reviewerEmail: true,
+        reviewBySystem: true,
         passedCnt: true,
         images: {
           select: {
