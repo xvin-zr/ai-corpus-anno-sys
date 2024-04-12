@@ -3,6 +3,8 @@ import { ArrowRightCircle } from "react-feather";
 import { heading1Style } from "../components/header.style";
 import { fetchMyReviewMissions } from "./data";
 
+export const dynamic = "force-dynamic";
+
 async function MyReviewPage() {
   const missions = await fetchMyReviewMissions();
   console.table(missions);

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { heading1Style } from "../components/header.style";
 import { fetchUserRecommendMissions } from "./data";
 
+export const dynamic = "force-dynamic";
+
 async function RecommendPage() {
   const recommendMissions = await fetchUserRecommendMissions();
   return (
