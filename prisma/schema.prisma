@@ -46,21 +46,22 @@ model VerificationToken {
 }
 
 model User {
-  id               String        @id @default(cuid())
-  name             String?
-  email            String?       @unique
-  passedMissionCnt Int           @default(6)
-  totalMissionCnt  Int           @default(10)
-  accuracy         Float         @default(0.6)
-  hashedPassword   String?
-  balance          Decimal       @default(0) @db.Money
-  createdAt        DateTime      @default(now())
-  isAdmin          Boolean       @default(false)
-  emailVerified    DateTime?
-  image            String?
-  userMissions     UserMission[]
-  accounts         Account[]
-  sessions         Session[]
+  id                  String        @id @default(cuid())
+  name                String?
+  email               String?       @unique
+  passedMissionCnt    Int           @default(6)
+  totalMissionCnt     Int           @default(10)
+  accuracy            Float         @default(0.6)
+  hashedPassword      String?
+  balance             Decimal       @default(0) @db.Money
+  createdAt           DateTime      @default(now())
+  isAdmin             Boolean       @default(false)
+  notInterestedLabels Json?
+  emailVerified       DateTime?
+  image               String?
+  userMissions        UserMission[]
+  accounts            Account[]
+  sessions            Session[]
 }
 
 model UserMission {
