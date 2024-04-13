@@ -70,7 +70,8 @@ export async function fetchUserRecommendMissions() {
   const userEmail = await getCurrUserEmail();
   try {
     const defaultAnnos = await fetchUserPassedDefaultAnnos();
-    const mainCategory = getUserMainCategory(defaultAnnos);
+    const notInterestedLabels = await fetchUserNotInterestedLabels();
+    const mainCategory = getUserMainCategory(defaultAnnos, notInterestedLabels);
     console.log("\nrecommend\n", mainCategory);
 
     const { accuracy } = (await prisma.user.findUnique({
@@ -108,8 +109,38 @@ export async function fetchUserRecommendMissions() {
   }
 }
 
+async function fetchUserNotInterestedLabels(): Promise<string[]> {
+  try {
+    const userEmail = await getCurrUserEmail();
+    const user = (await prisma.user.findUnique({
+      where: { email: userEmail },
+      select: { notInterestedLabels: true },
+    })) as { notInterestedLabels: { [label: string]: number } } | null;
+
+    if (!user?.notInterestedLabels) return [];
+
+    for (const label in user.notInterestedLabels) {
+      if (user.notInterestedLabels[label] < Date.now()) {
+        delete user.notInterestedLabels[label];
+      }
+    }
+
+    // 更新用户的 notInterestedLabels
+    await prisma.user.update({
+      where: { email: userEmail },
+      data: { notInterestedLabels: user.notInterestedLabels },
+    });
+
+    return Object.keys(user.notInterestedLabels);
+  } catch (err) {
+    console.error(err);
+    throw new Error("error in fetch User Not Interested Labels");
+  }
+}
+
 function getUserMainCategory(
   defaultAnnos: { anno: DefaultAnno[]; updatedAt: Date }[],
+  notInterestedLabels: string[],
 ): string[] {
   const map = new Map<string, { cnt: number; totalWeight: number }>();
 
@@ -129,6 +160,7 @@ function getUserMainCategory(
   console.log(map);
 
   return Array.from(map)
+    .filter(([category]) => !notInterestedLabels.includes(category))
     .sort(
       (a, b) =>
         b[1].cnt * 0.5 + b[1].totalWeight - (a[1].cnt * 0.4 + a[1].totalWeight),
