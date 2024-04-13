@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 
 function AcceptMissionBtn({
   missionId,
-  reviewBySystem,
+  thisMissionType,
 }: {
   missionId: string;
-  reviewBySystem: boolean;
+  thisMissionType: "sysOnly" | "humanOnly" | "upgraded";
 }) {
   const { replace } = useRouter();
-  if (reviewBySystem) {
+  if (thisMissionType == "sysOnly") {
     return (
       <Link
         href={`${missionId}/pre-task`}

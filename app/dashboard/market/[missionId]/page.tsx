@@ -9,6 +9,7 @@ import { fetchMissionDetail } from "../data";
 import AcceptMissionBtn from "./AcceptMissionBtn";
 import Carousel from "./Carousel";
 import NotInterestBtn from "./NotInterestBtn";
+import { fetchThisMissionType } from "../../my-missions/[missionId]/anno/[imageIndex]/data";
 
 export const tdStyle = clsx("border border-zinc-300 p-3 dark:border-zinc-600");
 export const trStyle = clsx("odd:bg-zinc-100 odd:dark:bg-zinc-800/50");
@@ -25,6 +26,8 @@ async function MissionDetailPage({
   if (!mission) {
     notFound();
   }
+
+  const thisMissionType = await fetchThisMissionType(missionId);
 
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
@@ -114,11 +117,11 @@ async function MissionDetailPage({
       </div>
 
       <section className="mt-16 flex items-center justify-center gap-4">
-        {/* {isRecommend && <NotInterestBtn />} */}
+        {isRecommend && <NotInterestBtn missionId={missionId} />}
 
         <AcceptMissionBtn
           missionId={missionId}
-          reviewBySystem={mission.reviewBySystem}
+          thisMissionType={thisMissionType}
         />
 
         {userEmail == mission.publisherEmail && (

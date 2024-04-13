@@ -1,6 +1,7 @@
 "use server";
 
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-option";
+import { getCurrUserEmail } from "@/app/data";
 import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -98,5 +99,49 @@ export async function acceptMissionAction(missionId: string): Promise<{
   } catch (err) {
     console.error(err);
     return { success: false, msg: "接受失败，请稍后再试" };
+  }
+}
+
+export async function notInterestedAction(missionId: string) {
+  try {
+    const userEmail = await getCurrUserEmail();
+    const mission = await prisma.mission.findUnique({
+      where: {
+        id: missionId,
+      },
+      select: {
+        mainCategories: true,
+      },
+    });
+    // 获得任务的类别
+    const mainCategories = mission?.mainCategories ?? [];
+    var { notInterestedLabels } = (await prisma.user.findUniqueOrThrow({
+      where: {
+        email: userEmail,
+      },
+      select: {
+        notInterestedLabels: true,
+      },
+    })) as { notInterestedLabels: { [label: string]: number } };
+
+    notInterestedLabels = notInterestedLabels ?? {};
+
+    // 更新用户的不感兴趣标签
+    mainCategories.forEach((category) => {
+      notInterestedLabels[category] = Date.now() + 7 * 24 * 60 * 60 * 1000;
+    });
+    await prisma.user.update({
+      where: {
+        email: userEmail,
+      },
+      data: {
+        notInterestedLabels,
+      },
+    });
+    revalidatePath("/dashboard/recommend");
+    return { success: true, msg: "将减少此类任务推荐" };
+  } catch (err) {
+    console.error(err);
+    throw new Error("error in not interested action");
   }
 }
