@@ -15,6 +15,8 @@ import RewardCompleteTime from "./Reward-CompleteTime";
 import TotalUser from "./TotalUser";
 import UserAccuracy from "./UserAccuracy";
 
+export const dynamic = "force-dynamic";
+
 async function AdminStatisticsPage() {
   const isAdmin = await checkIsAdmin();
   if (!isAdmin) notFound();
