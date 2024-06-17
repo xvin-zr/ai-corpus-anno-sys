@@ -163,7 +163,7 @@ function getUserMainCategory(
     .filter(([category]) => !notInterestedLabels.includes(category))
     .sort(
       (a, b) =>
-        b[1].cnt * 0.5 + b[1].totalWeight - (a[1].cnt * 0.4 + a[1].totalWeight),
+        b[1].cnt * 0.5 + b[1].totalWeight - (a[1].cnt * 0.5 + a[1].totalWeight),
     )
     .slice(0, 3)
     .map((a) => a[0]);
