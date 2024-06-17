@@ -12,7 +12,7 @@ function CompletedMission({
       <h1 className="text-xl font-semibold">任务完成趋势</h1>
       <AreaChart
         data={completedMissions}
-        colors={["blue-bupt"]}
+        // colors={["blue-bupt", "cyan", "indigo", "violet", "fuchsia"]}
         index="month"
         categories={["完成任务数量"]}
       />

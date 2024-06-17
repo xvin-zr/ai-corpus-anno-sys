@@ -14,7 +14,7 @@ function TotalUser({
         className="h-80 text-zinc-500"
         data={totalUsers}
         index="month"
-        colors={["blue-bupt"]}
+        // colors={["blue-bupt", "cyan", "indigo", "violet", "fuchsia"]}
         categories={["用户数量"]}
       />
     </>

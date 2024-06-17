@@ -22,6 +22,7 @@ function RewardCompleteTime({
         x="平均完成时间"
         y="平均报酬"
         size="平均报酬"
+        // colors={["blue", "cyan", "indigo", "violet", "fuchsia"]}
         valueFormatter={{
           x: (x) => `${(x / 1000 / 3600).toFixed(2)} 小时`,
           y: (y) => `¥ ${y}`,

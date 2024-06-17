@@ -118,7 +118,7 @@ export async function fetchMissionCategories() {
     const map = new Map();
     missions.forEach(({ mainCategories }) => {
       mainCategories.forEach((category) => {
-        if (category == "_") return;
+        if (category == "_" || category === "") return;
         map.set(category, (map.get(category) ?? 0) + 1);
       });
     });
@@ -239,6 +239,7 @@ export async function fetchRewardCompleteTime() {
       平均完成时间: number;
     }[] = [];
     map.forEach(({ cnt, totalTime, totalReward }, key) => {
+      if (key === "") return;
       res.push({
         类别: key,
         平均报酬: floatRound(totalReward / cnt),
@@ -274,3 +275,11 @@ export async function checkIsAdmin(): Promise<boolean> {
     throw new Error("error in isAdmin");
   }
 }
+
+export type ChartName =
+  | "total-user"
+  | "user-accuracy"
+  | "completed-missions"
+  | "mission-categories"
+  | "mission-passed-rate"
+  | "reward-complete-time";

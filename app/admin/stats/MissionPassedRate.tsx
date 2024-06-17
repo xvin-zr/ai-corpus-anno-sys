@@ -18,7 +18,7 @@ function MissionPassedRate({
         data={passedRate}
         index="month"
         categories={["系统审核通过率", "人工审核通过率"]}
-        colors={["blue-bupt", "cyan"]}
+        // colors={["blue-bupt", "cyan", "indigo", "violet", "fuchsia"]}
       />
     </>
   );
