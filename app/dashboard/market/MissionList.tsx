@@ -97,6 +97,9 @@ async function fetchFilteredMissions(
         where: {
           email: userEmail,
         },
+        select: {
+          accuracy: true,
+        },
       })) ?? {};
 
     const missions = await prisma.mission.findMany({
@@ -116,10 +119,22 @@ async function fetchFilteredMissions(
             has: userEmail,
           },
         },
-        recipientsCnt: {
-          lt: MAX_ALLOWED_RECIPIENTS,
-        },
-        reviewBySystem: accuracy > 0.8 ? {} : true,
+        OR: [
+          {
+            reviewBySystem: false,
+            recipientEmail: accuracy > 0.8 ? null : "",
+          },
+          {
+            reviewBySystem: true,
+            recipientsCnt: {
+              lt: MAX_ALLOWED_RECIPIENTS,
+            },
+          },
+        ],
+        // recipientsCnt: {
+        //   lt: MAX_ALLOWED_RECIPIENTS,
+        // },
+        // reviewBySystem: accuracy > 0.8 ? {} : true,
         mainCategories: {
           has: category == "All" ? "_" : category,
         },

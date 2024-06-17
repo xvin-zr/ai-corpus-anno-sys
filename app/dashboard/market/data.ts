@@ -10,28 +10,53 @@ export async function fetchMissionPages(
 ): Promise<number> {
   const userEmail = await getCurrUserEmail();
   try {
+    const { accuracy = 0.6 } =
+      (await prisma.user.findUnique({
+        where: {
+          email: userEmail,
+        },
+        select: {
+          accuracy: true,
+        },
+      })) ?? {};
+
     const totalMissions = await prisma.mission.count({
       where: {
         title: {
           contains: query,
           mode: "insensitive",
         },
-        status: "PENDING_ACCEPT",
-        recipientEmail: null,
-        recipientsCnt: {
-          lt: MAX_ALLOWED_RECIPIENTS,
+        publisherEmail: {
+          not: userEmail,
         },
+        recipientEmail: null,
         NOT: {
           multiRecipientEmails: {
             has: userEmail,
           },
-          publisherEmail: userEmail,
         },
+        OR: [
+          {
+            reviewBySystem: false,
+            recipientEmail: accuracy > 0.8 ? null : "",
+          },
+          {
+            reviewBySystem: true,
+            recipientsCnt: {
+              lt: MAX_ALLOWED_RECIPIENTS,
+            },
+          },
+        ],
+        // recipientsCnt: {
+        //   lt: MAX_ALLOWED_RECIPIENTS,
+        // },
+        // reviewBySystem: accuracy > 0.8 ? {} : true,
         mainCategories: {
           has: category == "All" ? "_" : category,
         },
       },
     });
+    console.log(totalMissions);
 
     return Math.ceil(totalMissions / MISSION_PAGE_SIZE);
   } catch (err) {
